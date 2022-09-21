@@ -1,0 +1,19 @@
+<!doctype html>
+<html>
+  <head>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/brython@3/brython.min.js">
+</script>
+    <script src="https://cdn.jsdelivr.net/npm/brython@3/brython_stdlib.js">
+</script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    {%block script %}{% endblock %}
+    {%block style %}{% endblock %}
+    <title>{% block title %}{% endblock %}</title>
+  </head>
+  <body onload='brython({"debug":1})'>
+    {% block content %}{% endblock %}
+  </body>
+</html>
