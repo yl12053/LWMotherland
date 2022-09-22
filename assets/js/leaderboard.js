@@ -73,7 +73,7 @@ class Leaderboard extends React.Component {
       } else {
         console.log("datUpload detected")
         dt();
-        setInterval(dt, 100)
+        setInterval(dt, 100);
       }
     }
     setTimeout(f, 1)
