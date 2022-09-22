@@ -13,6 +13,7 @@
 
 {% block content %}
 <div id="app" style="display: none"></div>
+<image id="img"></image>
 <script>
   function parse(obj){
     return obj;
@@ -26,7 +27,7 @@
   async def gdc():
     global dc
     while True:
-      arrs = [{"id": 1, "name": "group", "score": random.randint(0, 500)}, {"id": 2, "name": "group2", "score": random.randint(0, 500)}, {"id": 3, "name": "group3", "score": random.randint(0, 500)}, {"id": 4, "name": "group4", "score": random.randint(0, 500)}, {"id": 5, "name": "group5", "score": random.randint(0, 500)}, {"id": 6, "name": "group6", "score": random.randint(0, 500)}, {"id": 7, "name": "group7", "score": random.randint(0, 500)}, {"id": 8, "name": "group8", "score": random.randint(0, 500)}]
+      arrs = [{"id": 1, "name": "group", "score": random.randint(0, random.randint(0, 500))}, {"id": 2, "name": "group2", "score": random.randint(0, 500)}, {"id": 3, "name": "group3", "score": random.randint(0, 500)}, {"id": 4, "name": "group4", "score": random.randint(0, 500)}, {"id": 5, "name": "group5", "score": random.randint(0, 500)}, {"id": 6, "name": "group6", "score": random.randint(0, 500)}, {"id": 7, "name": "group7", "score": random.randint(0, 500)}, {"id": 8, "name": "group8", "score": random.randint(0, 500)}]
       #arrs.sort(key=lambda x: x["score"], reverse=True)
       dc = arrs.copy()
       await aio.sleep(3)
@@ -41,5 +42,6 @@
   window.datUpload = update_leaderboard
   window.jQuery("#app").show()
   aio.run(gdc())
+
 </script>
 {% endblock %}
