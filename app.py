@@ -40,6 +40,9 @@ def root():
 def leaderboard():
     return open("view.html", "r").read()
 
+@app.route("/login")
+def login():
+    return open("login.html", "r").read()
 for x in apps:
     app.register_blueprint(x)
 
