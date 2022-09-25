@@ -32,17 +32,31 @@ def assets(path):
     return flask.send_from_directory("assets", path)
 
 
+@app.route("/google95a4c2e4ac08c0ae.html", methods=["GET", "POST"])
+def google_verification_verify():
+    return open("static_root/google95a4c2e4ac08c0ae.html").read()
+
+
 @app.route("/")
 def root():
     return open("index.html", "r").read()
+
 
 @app.route("/lb")
 def leaderboard():
     return open("view.html", "r").read()
 
+
 @app.route("/login")
 def login():
     return open("login.html", "r").read()
+
+
+@app.route("/map")
+def map():
+    return open("map.html", "r").read()
+
+
 for x in apps:
     app.register_blueprint(x)
 
