@@ -1,18 +1,35 @@
 <html>
 <style>
-  body 
-  {background-image:url("/assets/china-map_18981-462.png");
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-  background-size: cover;}
+  body {
+    background-image:url("/assets/china-map_18981-462.png");
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center center;
+    background-size: contain;
+  }
 </style>
-
+2000 x 1520
 <button onclick="myFunction()" type="button" style = "background-color: Transparent;
     background-repeat:no-repeat;
     border: none;
     cursor:pointer;
-    overflow: hidden; "> <img src="/assets/pt12345.png" height ="80" width="100" /></button>
+    overflow: hidden; "> <img id="a" src="/assets/pt12345.png" /></button>
 <p id="demo"></p>
+
+<script>
+  if (window.innerHeight / window.innerWidth == 1520 / 2000){
+    document.getElementById("a").height = (window.innerHeight / 1520) * 52;
+    document.getElementById("a").width = (window.innerWidth / 2000) * 65;
+  } else {
+    if (window.innerWidth / 2000 > window.innerHeight / 1520){
+      document.getElementById("a").height = window.innerHeight / 1520 * 52;
+      document.getElementById("a").width = window.innerHeight / 1520 * 65;
+    } else {
+      document.getElementById("a").width = window.innerWidth / 2000 * 65;
+      document.getElementById("a").height = window.innerWidth / 2000 * 52;
+    }
+  }
+</script>
 <script>
 function myFunction() {
   document.getElementById("demo").innerHTML = "Hello World";

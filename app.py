@@ -1,17 +1,27 @@
 import flask
 from blueprint import apps
 from flask_sqlalchemy import SQLAlchemy
-from models.app_db import init
+from models.app_db import init, Model
+from flask_login import LoginManager, login_required
+import os
 
 app = flask.Flask(__name__)
+app.secret_key = "sctkey"
+
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.session_protection = "strong"
+login_manager.login_view = 'login'
+
+
+@login_manager.user_loader
+def user_loader(usr):
+    user = Model.Users
+    return user.query.get(int(usr))
 
 
 @app.after_request
 def add_header(r):
-    """
-    Add headers to both force latest IE rendering engine or Chrome Frame,
-    and also to cache the rendered page for 10 minutes.
-    """
     r.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
     r.headers["Pragma"] = "no-cache"
     r.headers["Expires"] = "0"
@@ -23,7 +33,7 @@ app.config["TEMPLATES_AUTO_RELOAD"] = True
 
 db = SQLAlchemy()
 app.config[
-    "SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://lwmotherland%40lwmland:LWm3therland@lwmland.mysql.database.azure.com"
+    "SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://lwmotherland%40lwmland:LWm3therland@lwmland.mysql.database.azure.com/Motherland"
 init(db, app)
 
 
@@ -47,9 +57,9 @@ def leaderboard():
     return open("view.html", "r").read()
 
 
-@app.route("/login")
-def login():
-    return open("login.html", "r").read()
+#@app.route("/login")
+#def login():
+#    return open("login.html", "r").read()
 
 
 @app.route("/map")
