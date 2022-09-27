@@ -1,0 +1,64 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Motherland Map{% endblock %}
+
+{% block style %}
+<style>
+  body {
+    margin: 0px;
+    padding: 0px;
+    background-color:#69AFC7
+  }
+</style>
+{% endblock %}
+
+{% block script %}
+<script src="https://pixijs.download/release/pixi.js"></script>
+{% endblock %}
+
+{% block content %}
+<script>
+  var width = {{ width }};
+  var height = {{ height }};
+  var clickable = false;
+</script>
+<script src="/assets/js/map.js"></script>
+<script>
+  var app = new PIXI.Application({"width": width, "height": height});
+  if (window.innerHeight / height > window.innerWidth / width){
+    app.view.style.width = "100vw";
+    app.view.style.height = (height/width*100) + "vw";
+  } else {
+    app.view.style.width = (width/height*100)+"vh";
+    app.view.style.height = "100vh";
+  }
+  app.view.style.position = "absolute";
+  app.view.style.top = "50%";
+  app.view.style.left = "50%";
+  app.view.style.transform = "translate(-50%, -50%)";
+  var vtext = PIXI.Texture.from('{{ asset_file }}');
+  var vspr = new PIXI.Sprite( vtext );
+  var bappend = [];
+  for (var b of btns){
+    let bs = new PIXI.Sprite();
+    console.log(bs);
+    bs.interactive = true;
+    bs.callback = b[2];
+    bs.hitArea = new PIXI.Ellipse(b[0], b[1], 31, 25);
+    bs.on('pointerdown', (event) => {if (clickable){return bs.callback(event)}});
+    app.stage.addChild(bs);
+  }
+  app.stage.addChild(vspr);
+  document.body.appendChild(app.view);
+  {% if type_asset == "video" %}
+  videoControler = vspr.texture.baseTexture.resource.source;
+  videoControler.muted = true;
+  videoControler.onended = function (){
+    {% endif %}
+    clickable = true;
+  {% if type_asset == "video" %}
+  }
+  videoControler.play();
+  {% endif %}
+</script>
+{% endblock %}

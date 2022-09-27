@@ -1,4 +1,5 @@
 import flask
+from flask import render_template
 from blueprint import apps
 from flask_sqlalchemy import SQLAlchemy
 from models.app_db import init, Model
@@ -64,7 +65,11 @@ def leaderboard():
 
 @app.route("/map")
 def map():
-    return open("map.html", "r").read()
+    return render_template("maps/map.html",
+                           asset_file="/assets/video/newmap.mp4",
+                           type_asset="video",
+                           width="2020",
+                           height="1520")
 
 
 for x in apps:
