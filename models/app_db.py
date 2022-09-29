@@ -21,11 +21,14 @@ def classes(db):
         clas = db.Column(db.VARCHAR(2))
         cno = db.Column(db.Integer)
         grp = db.Column(db.Integer)
+        used_name = db.Column(db.VARCHAR(255))
 
-        def __init__(self, id, clas, cno, grp):
+        def __init__(self, id, clas, cno, grp, name):
             self.id = id
             self.clas = clas
             self.cno = cno
             self.grp = grp
+            self.used_name = name
 
     Model.Users = Users
+    Model.self_db = db

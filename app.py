@@ -58,6 +58,11 @@ def leaderboard():
     return open("view.html", "r").read()
 
 
+@app.route("/home")
+def homepage():
+    return render_template("homepage/home.html")
+
+
 #@app.route("/login")
 #def login():
 #    return open("login.html", "r").read()
