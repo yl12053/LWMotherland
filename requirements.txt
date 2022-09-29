@@ -1,3 +1,6 @@
 flask
 Flask-SQLAlchemy
 pymysql
+Flask-Login
+requests
+Flask-SocketIO

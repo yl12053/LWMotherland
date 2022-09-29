@@ -1,4 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
+from flask_login import UserMixin
 
 
 class Model:
@@ -6,27 +7,28 @@ class Model:
 
 
 def init(db, app):
-    class_define(db)
+    classes(db)
     db.init_app(app)
+    with app.app_context():
+        db.create_all()
 
 
-def class_define(db):
+def classes(db):
 
-    class Players(db.Model):
-        __tablename__ = "Players"
+    class Users(db.Model, UserMixin):
+        __tablename__ = "Auth"
         id = db.Column(db.Integer, primary_key=True)
-        name = db.Column(db.VARCHAR(255))
-        uuid = db.Column(db.VARCHAR(36), unique=True)
-        dim = db.Column(db.Integer)
-        posx = db.Column(db.Integer)
-        posy = db.Column(db.Integer)
-        mark = db.Column(db.Integer)
+        clas = db.Column(db.VARCHAR(2))
+        cno = db.Column(db.Integer)
+        grp = db.Column(db.Integer)
+        used_name = db.Column(db.VARCHAR(255))
 
-        def __init__(self, id, name, uuid, dim, posx, posy):
+        def __init__(self, id, clas, cno, grp, name):
             self.id = id
-            self.name = name
-            self.uuid = uuid
-            self.dim = dim
-            self.posx = posx
-            self.posy = posy
-            self.mark = mark
+            self.clas = clas
+            self.cno = cno
+            self.grp = grp
+            self.used_name = name
+
+    Model.Users = Users
+    Model.self_db = db

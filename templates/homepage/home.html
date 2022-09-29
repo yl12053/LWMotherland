@@ -1,0 +1,265 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Mainpage{% endblock %}
+
+{% block style %}
+<style>
+    table,tr,td{border:1px solid silver}
+</style>
+<style>
+  @import url(https://fonts.googleapis.com/css?family=Kite+One);
+  @import url(https://fonts.googleapis.com/css?family=Offside);
+  html, body{
+    height: 100%;
+    margin: 0;
+  }
+  body{
+    background: #0D6050;
+    font: normal 1.1em Calibri;
+  }
+  nav{
+    height: 25%;
+    width: 30%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    font: normal 1.2em Offside;
+  }
+  p{
+    margin: 5px 0;
+  }
+  li a{
+    display: block;
+  }
+  a{
+    text-decoration: none;
+    color: #eee;
+    transition: all linear .3s;
+  }
+  .simile-a{
+    font-size:20;
+    text-decoration: none;
+    color: #ffffff;
+    transition: all linear .3s;
+    font: normal 1.2em Offside;
+    position: absolute;
+    right: 0%;
+    top: 0%;
+    margin-top: 5px;
+    margin-right: 5px;
+  }
+  a:hover{
+    color: #ecbb15;
+    position: relative;
+    cursor: pointer;
+    text-shadow: rgb(172, 136, 15) 0px 1px 0px,
+    rgb(108, 86, 10) 0px 2px 0px,
+    rgba(0, 0, 0, 0.199219) 0px 3px 1px,
+    rgba(0, 0, 0, 0.296875) 0px 4px 2px;
+    transition: all linear .3s;
+  }
+  li a:after{
+    content: attr(data-title);
+    padding: 4px 8px;
+    line-height: 100%;
+    color: #fff;
+    position: absolute;
+    left: 40%;
+    top: 70%;
+    white-space: nowrap;
+    z-index: 20px;
+    font-size: .7em;
+    background: rgba(23, 172, 144, .8);
+    opacity: 0;
+    text-shadow: none;
+  }
+  li a:hover:after{
+    opacity: 1;
+    transition: all linear .5s .2s ;
+  }
+  ul{
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
+  li{
+    width: 100%;
+    text-align: center;
+    line-height: 2.5em;
+    float: left;
+  }
+  li:first-child{
+    line-height: 60px;
+    font-size: 1.5em;
+    text-shadow: rgb(187, 187, 187) 0px 1px 0px,
+    rgb(181, 181, 181) 0px 2px 0px,
+    rgba(0, 0, 0, 0.199219) 0px 3px 1px,
+    rgba(0, 0, 0, 0.296875) 0px 4px 3px;
+  }
+  li:first-child a:hover{
+    -webkit-animation: anim infinite 1.5s;
+  }
+  @-webkit-keyframes anim{
+    0%{-webkit-transform: rotate(4deg);}
+    50%{-webkit-transform: rotate(-4deg);}
+    100%{-webkit-transform: rotate(4deg);}
+  }
+  section{
+    width: 400px;
+    background: #222;
+    color: #fff;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%) scale(0.6);
+    opacity: 0;
+    z-index: -1;
+    transition: all .3s ease-in;
+    box-shadow: 0 0 20px #000;
+    font: normal 1em 'Kite One';
+  }
+  header{
+    height: 32px;
+    padding: 0 8px;
+    line-height: 32px;
+    color: #000;
+    background: #17AC90;
+    font-weight: bold;
+    font-size: .9em;
+  }
+  section > div{
+    padding: 10px 4px;
+    text-align: center;
+  }
+  .close:after{
+    content:"X";
+    color: #fff;
+    height: 32px;
+    width: 32px;
+    line-height: 32px;
+    text-align: center;
+    background: #D63623;
+    position: absolute;
+    top: 0;
+    right: 0;
+    transition: all .2s linear;
+    font-family: Arial;
+  }
+  .close:hover{
+    cursor: pointer;
+  }
+  .close:hover:after{
+    background: #FF311A;
+    transition: all .2s linear;
+  }
+  .active{
+    -webkit-transform: translate(-50%, -50%) scale(1);
+    transition: all .3s ease-out;
+    opacity: 1;
+    z-index: 10;
+  }
+  .bt1{display: inline-block;
+  padding: 10px 20px;
+  font-size: 24px;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  outline: none;
+  color: #ffffff;
+  background-color: #0D6050;
+  border: none;
+  border-radius: 15px;
+  text-align: center;display: block;
+    width: 200px; margin: 0 auto;}
+</style>
+{% endblock %}
+{% block script %}
+<script src="https://unpkg.com/@ungap/custom-elements-builtin"></script>
+<script type="module" src="https://unpkg.com/x-frame-bypass"></script>
+<script>
+  function encodeQueryData(data) {
+    const ret = [];
+    for (let d in data)
+      ret.push(encodeURIComponent(d) + '=' + encodeURIComponent(data[d]));
+    return ret.join('&');
+  }
+  $(document).ready(function(){
+    {% if current_user.is_authenticated %}
+    $("#logout").click((event) => {
+      window.location = "/logout?"+encodeQueryData({"jump": window.location.pathname});
+    })
+    {% else %}
+    $("#jogar-btn").click(function(event){
+      // $("#login").addClass("active");
+      window.location = "/login?"+encodeQueryData({"jump": window.location.pathname});
+    });
+    {% endif %}
+    $("#op-btn").click(function(event){
+      $("#opcoes").addClass("active");
+    });
+    $("#midia-btn").click(function(){
+      $("#midia").addClass("active");
+    });
+    $(".close").click(function() {
+    	$(this).parent().parent().removeClass("active");
+    });
+  });
+</script>
+{% endblock %}
+
+{% block content %}
+{% if current_user.is_authenticated %}
+<table class = "simile-a" style="border: none">
+  <tr style="border: none">
+    <td style="border: none"> user name: </td>
+    <td style="border: none"> {% if current_user.used_name == "" or current_user.used_name == None %} {{ current_user.clas }} {{ current_user.cno }} {% else %} {{ current_user.used_name }} {% endif %}</td>
+  </tr>
+  <tr style="border: none">
+    <td style="border: none"> class & number: </td>
+    <td style="border: none"> {{ current_user.clas }} {{ current_user.cno }} </td>
+  </tr>
+  <tr style="border: none">
+    <td style="border: none"> gp number: </td>
+    <td style="border: none"> {{ current_user.grp }} </td>
+  </tr>
+</table>
+{% else %}
+<span class="simile-a">Not Logined</span>
+{% endif %}
+<nav>
+  <ul>
+    {% if current_user.is_authenticated %}
+    <li><a data-title="logout here" id="logout">Logout</a></li>
+    {% else %}
+    <li><a data-title="sign in your school google account" id="jogar-btn">Account Login</a></li>
+    {% endif %}
+    <li><a data-title="game start here" id="op-btn">Start</a></li>
+    <li><a data-title="xxxs" id="midia-btn">Leaderboard</a></li>
+  </ul>
+</nav>
+<section id="login">
+  <header>
+  	Login
+  	<div class="close"></div>
+  </header>
+  </br>
+  <a href = "/login"><button class = "bt1">login</button></a>
+</section>
+<section id="opcoes">
+  <header>
+  	Opções
+  	<div class="close"></div>
+  </header>
+  <div>
+  	<p>Bla bla bla</p>
+  </div>
+</section>
+<section id="midia">
+  <header>
+  	Mídia
+  	<div class="close"></div>
+  </header>
+  <div></div>
+</section>
+{% endblock %}
