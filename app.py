@@ -8,11 +8,12 @@ import os
 
 app = flask.Flask(__name__)
 app.secret_key = "sctkey"
-
+app.config["static_url_path"] = "assets"
+app.config["static_folder"] = 'assets'
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.session_protection = "strong"
-login_manager.login_view = 'login'
+login_manager.login_view = 'homepage'
 
 
 @login_manager.user_loader
@@ -34,13 +35,17 @@ app.config["TEMPLATES_AUTO_RELOAD"] = True
 
 db = SQLAlchemy()
 app.config[
-    "SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://lwmotherland%40lwmland:LWm3therland@lwmland.mysql.database.azure.com/Motherland"
+    "SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://lwmotherland:lwmotherland@db4free.net/lwmotherland"
 init(db, app)
 
 
 @app.route("/assets/<path:path>")
 def assets(path):
-    return flask.send_from_directory("assets", path)
+    return flask.send_from_directory("assets",
+                                     path,
+                                     conditional=False,
+                                     as_attachment=False,
+                                     download_name=None)
 
 
 @app.route("/google95a4c2e4ac08c0ae.html", methods=["GET", "POST"])
@@ -69,8 +74,9 @@ def homepage():
 
 
 @app.route("/map")
+@login_required
 def map():
-    return render_template("maps/map.html",
+    return render_template("map/map.html",
                            asset_file="/assets/video/newmap.mp4",
                            type_asset="video",
                            width="2020",
@@ -79,6 +85,16 @@ def map():
 
 for x in apps:
     app.register_blueprint(x)
+
+
+@app.route("/<path:path>")
+def asroot(path):
+    return flask.send_from_directory("As_Root",
+                                     path,
+                                     conditional=False,
+                                     as_attachment=False,
+                                     download_name=None)
+
 
 if __name__ == "__main__":
     app.run("0.0.0.0", 80)

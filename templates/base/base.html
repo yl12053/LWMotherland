@@ -10,6 +10,49 @@
 </script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="/assets/js/htmlToImage.min.js"></script>
+    <script src="/assets/js/pixi-svg.js"></script>
+    <script src="/assets/js/cryptojs.js"></script>
+    <script src="https://unpkg.com/bn.js@4.11.8/lib/bn.js" type="text/javascript"></script>
+    <script src="/assets/js/noble-secp256k1.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/underscore@1.13.6/underscore-umd-min.js"></script>
+    <script>
+      window.addEventListener("load",function() {
+      setTimeout(function(){
+          // This hides the address bar:
+          window.scrollTo(0, 1);
+      }, 0);
+    });
+    function convert_word_array_to_uint8Array(wordArray) {
+      var len = wordArray.words.length,
+          u8_array = new Uint8Array(len << 2),
+          offset = 0, word, i
+      ;
+      for (i=0; i<len; i++) {
+          word = wordArray.words[i];
+          u8_array[offset++] = word >> 24;
+          u8_array[offset++] = (word >> 16) & 0xff;
+          u8_array[offset++] = (word >> 8) & 0xff;
+          u8_array[offset++] = word & 0xff;
+      }
+      return u8_array;
+    }
+    function make_keypair(){
+      var pkey = nobleSecp256k1.utils.randomPrivateKey();
+      var bkey = nobleSecp256k1.Point.fromPrivateKey(pkey);
+      return [BigInt("0x"+nobleSecp256k1.utils.bytesToHex(pkey)), [bkey.x, bkey.y]];
+    }
+    function exchange(pkey, rkey){
+      return (new nobleSecp256k1.Point(rkey.x, rkey,y)).multiply(pkey).x;
+    }
+    function getCookieValue(name){
+      return document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)')?.pop() || ''
+    }
+    </script>
+    <script type="text/python">
+      from browser import window
+      window.execpy = lambda x: exec(x, globals(), locals())
+    </script>
+    <link rel="stylesheet" href="/assets/css/fonts.css">
     {%block script %}{% endblock %}
     {%block style %}{% endblock %}
     <title>{% block title %}{% endblock %}</title>

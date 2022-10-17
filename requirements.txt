@@ -4,3 +4,4 @@ pymysql
 Flask-Login
 requests
 Flask-SocketIO
+pycryptodome

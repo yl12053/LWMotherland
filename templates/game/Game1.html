@@ -1,0 +1,154 @@
+ {% extends 'base/base.html' %}
+
+{% block title %}Mainpage{% endblock %}
+
+{% block style %}
+<style>
+  body {
+    background: url(/assets/images/cgbk.png);
+    margin: 0px;
+  }
+  #container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: none;
+    margin: 0px;
+    overflow: hidden;
+  }
+  #sv {
+    position: relative;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    margin: 0px;
+  }
+  .dab {
+    filter: brightness(0.7);
+  }
+  .btns {
+    display: table-cell;
+    vertical-align: middle;
+    cursor: pointer;
+    text-align: center;
+  }
+  .abut:hover {
+    filter: brightness(1.1);
+  }
+  .abut:active {
+    filter: brightness(0.9);
+  }
+  .activ {
+    filter: brightness(1.2);
+  }
+  .activ:active {
+    filter: brightness(0.9);
+  }
+  .noselect {
+    -webkit-touch-callout: none;
+      -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+            user-select: none;
+  }
+</style>
+{% endblock %}
+{% block script %}
+<script src='/dynamic/g1dynam.js?hx={{ hx }}'></script>
+<script src="/assets/js/question_fetcher.js"></script>
+{% endblock %}
+
+{% block content %}
+<div id="container" class="noselect" style = "background-color:rgba(255, 56, 56,0.7)">
+  <div id="mainzone" style="height: 80%; width: 80%; display: none; border:   none; margin: auto;">
+    <div id="question_container" style="height: 15%; width: 100%; background-color: yellow; overflow: hidden ;margin: 5px;text-align: center;">
+      Question Here
+    </div>
+    <div style="height: 60%; width: 100%; background-image: url(/assets/images/questionbox.png);background-size: contain;background-position: center ;
+background-repeat: no-repeat;text-align: center;">
+      Battle Here
+    </div>
+    <strong  id= "demo" onclick = "myFunction()"style= "text-align:center; color : white">⚠️ if you find that the webpage doesnt fit size, scroll the browser bar up then zoom out again <sub>(click to remove)</sub> </strong>
+    <table id="table" style="height: 30%; width: 100%">
+      <tbody>
+        <tr>
+          <td style="padding: 0; padding-top: 0.5%; padding-left: 0px; width: 50%;">
+            <div style="display: table; height: 100%; width: 100%">
+              <div id="btn1" class="btns abut" style="background-image: url(/assets/images/hat.png); background-size: contain;background-position: center ;
+background-repeat: no-repeat;text-align: center;font-size: 30px;color:white;">1</div>
+            </div>
+          </td>
+          <td style="padding: 0; padding-top: 0.5%; padding-right: 0px; width: 50%;">
+            <div style="display: table; height: 100%; width: 100%">
+              <div id="btn2" class="btns abut" style="background-image: url(/assets/images/cat.png); background-size: contain;background-position: center ;
+background-repeat: no-repeat;text-align: center;font-size: 30px;color:white;">2</div>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding: 0; padding-bottom: 0.5%; padding-left: 0px; width: 50%;">
+            <div style="display: table; height: 100%; width: 100%">
+              <div id="btn3" class="btns abut" style="background-image: url(/assets/images/rat.png); background-size: contain;background-position: center ;
+background-repeat: no-repeat;text-align: center;font-size: 30px;color:white;">3</div>
+            </div>
+          </td>
+          <td style="padding: 0; padding-bottom: 0.5%; padding-right: 0px; width: 50%;">
+            <div style="display: table; height: 100%; width: 100%">
+              <div id="btn4" class="btns abut" style="background-image: url(/assets/images/rabbit.png); background-size: contain;background-position: center ;
+background-repeat: no-repeat;text-align: center;font-size: 30px;color:white;">4</div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div style="padding: 0; padding-bottom: 0.5%; padding-left: 0px; width: 100%; height: 15%">
+      <div style="display: table; height: 50%; width: 100%">
+        <a id="btnconfirm" class="btns abut" style="height: 100%; text-decoration: none;background-image: url(/assets/images/confirm.png); background-size: contain;background-position: center ;
+background-repeat: no-repeat;text-align: center;font-size: 30px;color:white;" href="javascript:void(0);">Confirm!</a>
+      </div>
+    </div>
+  </div>
+  
+</div>
+
+<script>
+  window.pDone = false;
+  function myFunction() {
+    document.getElementById("demo").innerHTML = "";
+  }
+  function chan(){
+    if (document.documentElement.clientHeight / 3 > document.documentElement.clientWidth / 4){
+      $("#container").css("width", "100vw");
+      $("#container").css("height", (3/4*100) + "vw");
+    } else {
+      $("#container").css("width", (4/3*100)+"vh");
+      $("#container").css("height","100vh");
+    }
+  }
+  var resizeObserver = new ResizeObserver(chan);
+  resizeObserver.observe(document.body);
+  chan();
+  if ({{ cg }}){
+      var v = $("<video muted>").append(
+        $("<source>").prop("src", "/assets/video/Games/game1/game1cg.mp4")
+      ).attr("id", "sv");
+      if (document.documentElement.clientHeight / 9 > document.documentElement.clientWidth / 16){
+        v.css("width", "90vw");
+      } else {
+        v.css("height", "90vh");
+      }
+      $("#container").append(v);
+      v[0].play();
+  }
+  {% if cg=="true" %}
+  v[0].addEventListener('ended', function (event){
+    v.remove();
+  {% endif %}
+    window.pDone = true;
+  {% if cg=="true" %}
+  }, false);
+  {% endif %}
+</script>
+{% endblock %}

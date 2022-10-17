@@ -15,7 +15,7 @@
   }
   body{
     background: #0D6050;
-    font: normal 1.1em Calibri;
+    font: normal 1.1em RetroGaming;
   }
   nav{
     height: 25%;
@@ -24,7 +24,7 @@
     top: 50%;
     left: 50%;
     -webkit-transform: translate(-50%, -50%);
-    font: normal 1.2em Offside;
+    font: normal 1.2em RetroGaming;
   }
   p{
     margin: 5px 0;
@@ -34,15 +34,35 @@
   }
   a{
     text-decoration: none;
-    color: #eee;
+    color: white;
     transition: all linear .3s;
+    background-color: rgba(255, 50, 0, 0.8);
+    margin: 10px;
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 9px #999;      
+    background-color: rgba(255, 50, 0, 0.8);
+    border-radius: 100px;
+    box-shadow: rgba(178, 120, 19, 0.2) 0 -25px 18px -14px inset,rgba(178, 120, 19, 0.2) 0 1px 2px,rgba(178, 120, 19, 0.2) 0 2px 4px,rgba(178, 120, 19, 0.2) 0 4px 8px,rgba(178, 120, 19, 0.2) 0 8px 16px,rgba(178, 120, 19, 0.2) 0 16px 32px;
+    cursor: pointer;
+    display: inline-block;
+    padding: 7px 20px;
+    text-align: center;
+    text-decoration: none;
+    transition: all 250ms;
+    border: 0;
+    font-size: 30px;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
   }
   .simile-a{
     font-size:20;
     text-decoration: none;
     color: #ffffff;
+    background-color:rgba(255, 50, 0, 0.4);
     transition: all linear .3s;
-    font: normal 1.2em Offside;
+    font: normal 1.2em RetroGaming;
     position: absolute;
     right: 0%;
     top: 0%;
@@ -53,26 +73,12 @@
     color: #ecbb15;
     position: relative;
     cursor: pointer;
-    text-shadow: rgb(172, 136, 15) 0px 1px 0px,
+    text-shadow: rgba(255, 50, 0, 0.4) 0px 1px 0px,
     rgb(108, 86, 10) 0px 2px 0px,
     rgba(0, 0, 0, 0.199219) 0px 3px 1px,
     rgba(0, 0, 0, 0.296875) 0px 4px 2px;
     transition: all linear .3s;
-  }
-  li a:after{
-    content: attr(data-title);
-    padding: 4px 8px;
-    line-height: 100%;
-    color: #fff;
-    position: absolute;
-    left: 40%;
-    top: 70%;
-    white-space: nowrap;
-    z-index: 20px;
-    font-size: .7em;
-    background: rgba(23, 172, 144, .8);
-    opacity: 0;
-    text-shadow: none;
+    background-color: rgba(255, 50, 0, 0.6);
   }
   li a:hover:after{
     opacity: 1;
@@ -96,9 +102,6 @@
     rgb(181, 181, 181) 0px 2px 0px,
     rgba(0, 0, 0, 0.199219) 0px 3px 1px,
     rgba(0, 0, 0, 0.296875) 0px 4px 3px;
-  }
-  li:first-child a:hover{
-    -webkit-animation: anim infinite 1.5s;
   }
   @-webkit-keyframes anim{
     0%{-webkit-transform: rotate(4deg);}
@@ -172,6 +175,19 @@
   border-radius: 15px;
   text-align: center;display: block;
     width: 200px; margin: 0 auto;}
+  .bkv {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    min-width: 100%;
+    min-height: 100%;
+    transform: translateX(calc((100% - 100vw) / 2));
+    z-index: -1000;
+    height: 100vh;
+  }
+  .bkv::-webkit-media-controls {
+    display: none;
+  }
 </style>
 {% endblock %}
 {% block script %}
@@ -185,6 +201,7 @@
     return ret.join('&');
   }
   $(document).ready(function(){
+    $("body").append($("<video>").addClass("bkv").prop("autoplay", "autoplay").prop("muted", true).prop("control", false).prop("loop", true).append($("<source>").attr("src", "/assets/video/backgroundvideo.mp4").attr("type", "video/mp4")));
     {% if current_user.is_authenticated %}
     $("#logout").click((event) => {
       window.location = "/logout?"+encodeQueryData({"jump": window.location.pathname});
@@ -196,6 +213,9 @@
     });
     {% endif %}
     $("#op-btn").click(function(event){
+      {% if current_user.is_authenticated %}
+      window.location = "/map";
+      {% endif %}
       $("#opcoes").addClass("active");
     });
     $("#midia-btn").click(function(){
@@ -209,33 +229,35 @@
 {% endblock %}
 
 {% block content %}
+
 {% if current_user.is_authenticated %}
+
 <table class = "simile-a" style="border: none">
   <tr style="border: none">
-    <td style="border: none"> user name: </td>
-    <td style="border: none"> {% if current_user.used_name == "" or current_user.used_name == None %} {{ current_user.clas }} {{ current_user.cno }} {% else %} {{ current_user.used_name }} {% endif %}</td>
+    <td style="border: none"> user name : </td>
+    <td style="border: none;text-align: right;"> {% if current_user.used_name == "" or current_user.used_name == None %} {{ current_user.clas }} {{ current_user.cno }} {% else %} {{ current_user.used_name }} {% endif %}</td>
   </tr>
   <tr style="border: none">
-    <td style="border: none"> class & number: </td>
-    <td style="border: none"> {{ current_user.clas }} {{ current_user.cno }} </td>
+    <td style="border: none"> class & number : </td>
+    <td style="border: none;text-align: right;"> {{ current_user.clas }} {{ current_user.cno }} </td>
   </tr>
   <tr style="border: none">
-    <td style="border: none"> gp number: </td>
-    <td style="border: none"> {{ current_user.grp }} </td>
+    <td style="border: none"> group number : </td>
+    <td style="border: none;text-align: right;"> {{ current_user.grp }} </td>
   </tr>
 </table>
 {% else %}
-<span class="simile-a">Not Logined</span>
+<span class="simile-a">Please Login</span>
 {% endif %}
 <nav>
   <ul>
+    <li><a id="op-btn">Start</a></li>
     {% if current_user.is_authenticated %}
-    <li><a data-title="logout here" id="logout">Logout</a></li>
+    <li><a id="logout">Logout</a></li>
     {% else %}
-    <li><a data-title="sign in your school google account" id="jogar-btn">Account Login</a></li>
+    <li><a id="jogar-btn">Account Login</a></li>
     {% endif %}
-    <li><a data-title="game start here" id="op-btn">Start</a></li>
-    <li><a data-title="xxxs" id="midia-btn">Leaderboard</a></li>
+    <li><a id="midia-btn">Leaderboard</a></li>
   </ul>
 </nav>
 <section id="login">
@@ -248,11 +270,15 @@
 </section>
 <section id="opcoes">
   <header>
-  	Opções
+  	Start Game
   	<div class="close"></div>
   </header>
   <div>
-  	<p>Bla bla bla</p>
+    {% if current_user.is_authenticated %}
+  	<p>Loading into game...</p>
+    {% else %}
+    <p>Please login first.</p>
+    {% endif %}
   </div>
 </section>
 <section id="midia">
