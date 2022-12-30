@@ -1,5 +1,5 @@
 import collections
-import random
+import secrets
 
 EllipticCurve = collections.namedtuple('EllipticCurve', 'name p a b g n h')
 
@@ -152,7 +152,7 @@ def scalar_mult(k, point):
 
 def make_keypair():
     """Generates a random private-public key pair."""
-    private_key = random.randrange(1, curve.n)
+    private_key = secrets.randbelow(curve.n - 1) + 1
     public_key = scalar_mult(private_key, curve.g)
 
     return private_key, public_key

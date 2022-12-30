@@ -3,8 +3,9 @@ from flask import render_template
 from blueprint import apps
 from flask_sqlalchemy import SQLAlchemy
 from models.app_db import init, Model
-from flask_login import LoginManager, login_required
+from flask_login import LoginManager, login_required, current_user
 import os
+import sys
 
 app = flask.Flask(__name__)
 app.secret_key = "sctkey"
@@ -14,6 +15,10 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.session_protection = "strong"
 login_manager.login_view = 'homepage'
+if len(sys.argv) and sys.argv[-1] == "debug":
+    app.config["T_DEBUG"] = True
+else:
+    app.config["T_DEBUG"] = False
 
 
 @login_manager.user_loader
@@ -53,34 +58,42 @@ def google_verification_verify():
     return open("static_root/google95a4c2e4ac08c0ae.html").read()
 
 
-@app.route("/")
-def root():
-    return open("index.html", "r").read()
+if app.config["T_DEBUG"]:
 
+    @app.route("/")
+    def root():
+        return open("index.html", "r").read()
 
-@app.route("/lb")
-def leaderboard():
-    return open("view.html", "r").read()
+    @app.route("/lb")
+    def leaderboard():
+        return open("view.html", "r").read()
 
+    @app.route("/home")
+    def homepage():
+        return render_template("homepage/home.html")
 
-@app.route("/home")
-def homepage():
-    return render_template("homepage/home.html")
+else:
 
-
-#@app.route("/login")
-#def login():
-#    return open("login.html", "r").read()
+    @app.route("/")
+    def root():
+        return render_template("homepage/home.html")
 
 
 @app.route("/map")
 @login_required
 def map():
+    mdf = Model.player_position.query.filter_by(id=current_user.id).first()
+    if mdf is not None:
+        rerr = mdf.preventRedone
+    else:
+        rerr = 0
     return render_template("map/map.html",
                            asset_file="/assets/video/newmap.mp4",
                            type_asset="video",
                            width="2020",
-                           height="1520")
+                           height="1520",
+                           rerr=str(rerr)
+                          )
 
 
 for x in apps:
@@ -97,4 +110,4 @@ def asroot(path):
 
 
 if __name__ == "__main__":
-    app.run("0.0.0.0", 80)
+    app.run("0.0.0.0", 8080)
