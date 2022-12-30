@@ -21,9 +21,6 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    border: 30px ridge rgba(128,121,126,1);
-    border-radius: 0px;
-    margin: 30px;
     overflow: hidden ;
   }
   .trans {
@@ -59,8 +56,10 @@
   font-size:15px;
   margin: 20px auto 20px auto;
   padding: 50px;
+  padding-bottom: 20px;
   line-height: 30px;
-  width: 800px;
+  width: 80%;
+  margin-bottom: 0px;
 }
 
 .blank {
@@ -182,11 +181,11 @@ p.a{
 {% block content %}
 <div id="container" class="noselect" style = "background-image:url(https://media.istockphoto.com/id/1269592684/vector/hud-ui-gui-futuristic-user-interface-screen-elements-high-tech-screen-for-video-game-sci-fi.jpg?s=170667a&w=0&k=20&c=OLFFN3o7ru9zZHql3zpuk8dXXNy9t_08XcDLzF8UE3c=);background-position: center;background-size: cover;;background-repeat:no-repeat">
   
-  <div id="mainzone" style="height: 100%; width: 80%; display: none; border: none; margin: auto; ">
+  <div id="mainzone" style="height: calc(100% - 60px); width: 80%; display: none; border: 30px ridge rgba(128,121,126,1); border-radius: 0px; margin: auto;">
     <!-- <video muted loop style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);">
       <source src="https://images.theconversation.com/files/223729/original/file-20180619-126566-1jxjod2.jpg?ixlib=rb-1.1.0&q=45&auto=format&w=1200&h=675.0&fit=crop">
     </video> <- Keep this, someone's job-->
-    <div style="background-color: rgba(21, 14, 87, 0.7); border-radius: 5px; color: white; margin: 40px auto 20px auto; padding: 50px;padding-bottom:20px; width: 800px;color:aquamarine;font:normal 1.1em RetroGaming;border-color: coral;border:solid">
+    <div style="background-color: rgba(21, 14, 87, 0.7); border-radius: 5px; color: white; margin: 40px auto 20px auto; padding: 50px;padding-bottom:20px; width: 80%;color:aquamarine;font:normal 1.1em RetroGaming;border-color: coral;border:solid">
   <strong style="font-size:20px">Game 2: The Three forges in Changjiang</strong>
   <p style="font-size:15px" >Click the blanks to view pop-up word choices.</p>
 </div>
@@ -244,9 +243,9 @@ p.a{
   {% if cg=="true" %}
   v[0].addEventListener('ended', function (event){
     v.remove();
-    $("#mainzone").show();
   {% endif %}
     window.pDone = true;
+    $("#mainzone").show();
   {% if cg=="true" %}
   }, false);
   {% endif %}

@@ -20,7 +20,7 @@ hexmap = {}
 allowhex = []
 
 
-@app.route("/dynamic/g2dynam.js")
+@app.route("/dynamic/g3dynam.js")
 def gheader():
     hx = flask.request.args.get("hx")
     if hx not in allowhex:
@@ -28,12 +28,12 @@ def gheader():
     allowhex.remove(hx)
     p1, p2 = tuple(game3key[hx][0][1])
     rtemplate = Environment(loader=BaseLoader).from_string(
-        open("dynamic_file/Game2%s.js" %
+        open("dynamic_file/Game3%s.js" %
              ("" if current_app.config["T_DEBUG"] else "_Obfuscation")).read())
     return rtemplate.render(hx=hx, px=hex(p1), py=hex(p2))
 
 
-@app.route("/apis/game1/ecdhe", methods=['POST'])
+@app.route("/apis/game3/ecdhe", methods=['POST'])
 def ecd():
     hx = flask.request.form.get("hx")
     if hx not in game3key.keys() or (game3key[hx][2] - time.time() > 600):

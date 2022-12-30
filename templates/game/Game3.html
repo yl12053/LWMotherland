@@ -464,9 +464,9 @@
   {% if cg=="true" %}
   v[0].addEventListener('ended', function (event){
     v.remove();
-    $("#mainzone").show();
   {% endif %}
     window.pDone = true;
+    $("#mainzone").show();
   {% if cg=="true" %}
   }, false);
   {% endif %}
