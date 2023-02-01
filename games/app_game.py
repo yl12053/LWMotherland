@@ -1,7 +1,7 @@
 from flask import Blueprint
 import flask
 from flask import make_response
-from flask_login import current_user
+from flask_login import current_user, login_required
 from models.app_db import Model
 from modules import ecdhe
 import time
@@ -21,6 +21,7 @@ allowhex = []
 
 
 @app.route("/dynamic/g1dynam.js")
+@login_required
 def gheader():
     hx = flask.request.args.get("hx")
     if hx not in allowhex:
@@ -34,6 +35,7 @@ def gheader():
 
 
 @app.route("/apis/game1/ecdhe", methods=['POST'])
+@login_required
 def ecd():
     hx = flask.request.form.get("hx")
     if hx not in game1key.keys() or (game1key[hx][2] - time.time() > 600):
@@ -49,6 +51,7 @@ def ecd():
 
 
 @app.route("/apis/game1/update", methods=["POST"])
+@login_required
 def updGame1():
 
     def timeCompansation(t):
@@ -104,6 +107,7 @@ def updGame1():
 
 
 @app.route("/apis/game1/fetch_q", methods=['POST'])
+@login_required
 def ques():
     hx = flask.request.form.get("hx")
     if hx not in game1key.keys() or (game1key[hx][2] - time.time() > 600):
@@ -130,6 +134,7 @@ def ques():
 
 
 @app.route("/apis/game1/keep_key_alive", methods=["POST"])
+@login_required
 def kalive():
     hx = flask.request.form.get("hx")
     if hx not in game1key.keys() or (game1key[hx][2] - time.time() > 600):
@@ -139,6 +144,7 @@ def kalive():
 
 
 @app.route("/Game1")
+@login_required
 def leader():
     mdf = Model.player_position.query.filter_by(id=current_user.id).first()
     if mdf is not None:

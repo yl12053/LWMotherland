@@ -174,7 +174,7 @@ p.a{
 </style>
 {% endblock %}
 {% block script %}
-<script src='/dynamic/g2dynam.js?hx={{ hx }}'></script>
+<!-- <script src='/dynamic/g2dynam.js?hx={{ hx }}'></script> -->
 <script src="/assets/js/question_fetcher.js"></script>
 {% endblock %}
 
@@ -190,26 +190,13 @@ p.a{
   <p style="font-size:15px" >Click the blanks to view pop-up word choices.</p>
 </div>
 <div class="content_container">
-  
-  1.  According to Article 1 of the Basic Law, Hong Kong is a/an <span class="blank" ><span class="text_container" id="q1">&nbsp;</span><span class="choice_cloud"><span class="choice">inalienable</span><span class="choice">important</span><span class="choice">transferrable</span><span class="choice">separable</span></span></span> part of China. <br></br><hr></hr>
-
-  2. Article 5 of Basic Law states that the previous capitalist system and way of life shall remain unchanged in Hong Kong for <span class="blank" ><span class="text_container" id="q2">&nbsp;</span><span class="choice_cloud"><span class="choice">25</span><span class="choice">50</span><span class="choice">75</span><span class="choice">100</span></span></span> years.<br></br><hr></hr>
-
-  3. The first letter in the alphabet is <span class="blank" ><span class="text_container" id="q3">&nbsp;</span><span class="choice_cloud"><span class="choice">a</span><span class="choice">b</span><span class="choice">c</span><span class="choice">d</span></span></span>.
-<br></br><hr></hr>
-
-4. I go to school <span class="blank" ><span class="text_container" id="q4">&nbsp;</span><span class="choice_cloud"><span class="choice">on</span><span class="choice">in</span><span class="choice">by</span><span class="choice">with</span></span></span> bus.
-<br></br><hr></hr>
-
-5. I go to school <span class="blank" ><span class="text_container" id="q5">&nbsp;</span><span class="choice_cloud"><span class="choice">on</span><span class="choice">in</span><span class="choice">by</span><span class="choice">with</span></span></span> foot.
-<br></br><hr></hr>
-
-6. My favourite teacher is <span class="blank" ><span class="text_container" id="q6">&nbsp;</span><span class="choice_cloud"><span class="choice">miss siu</span><span class="choice">ms lee</span><span class="choice">ms wong</span><span class="choice">Jay Leung</span></span></span>.
-<br></br><hr></hr>
+  {% for i in range(len(question_datas)) %}
+    {{ question_datas[i]|safe }}<br></br><hr></hr>
+  {% endfor -%}
   
 <button id="demo"  style="background-color:mediumaquamarine;cursor: pointer;color:blue"onclick="myFunction()">confirm</button>
 <input type=button style="background-color:mediumaquamarine;cursor: pointer;color:blue"onClick="parent.location='https://LWMotherland.motszhin.repl.co/map'"
- value='return to map'>
+ value='return to map'></input>
 </div>
 </div>
 

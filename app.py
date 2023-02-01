@@ -1,8 +1,8 @@
 import flask
 from flask import render_template
-from blueprint import apps
 from flask_sqlalchemy import SQLAlchemy
 from models.app_db import init, Model
+from blueprint import apps
 from flask_login import LoginManager, login_required, current_user
 import os
 import sys
@@ -108,6 +108,6 @@ def asroot(path):
                                      as_attachment=False,
                                      download_name=None)
 
-
+print("[Main] Runway Clear!")
 if __name__ == "__main__":
     app.run("0.0.0.0", 8080)

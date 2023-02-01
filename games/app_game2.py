@@ -10,17 +10,46 @@ import uuid
 import hashlib
 import base64
 from Crypto.Cipher import AES
-from jinja2 import Environment, BaseLoader
+from jinja2 import Environment, BaseLoader, Template
 from flask import current_app
+import threading
+
+initialized = False
 
 app = Blueprint('app_game2', __name__)
 
 game2key = {}
 hexmap = {}
 allowhex = []
+question_datas = []
 
+def thread_caching():
+    global question_datas, initialized
+    if not getattr(Model, "_initialized", False):
+        print("[Worker 2] Waiting for model initialization")
+        while not getattr(Model, "_initialized", False):
+            pass
+    with Model.curr_app.app_context():
+        print("[Worker 2] Caching Game 2 Question")
+        question_data = Model.Game2Q.query.all()
+        print("[Worker 2] Preprocessing Game 2...")
+        for x in question_data:
+            html = Template("{{x.id}}.  " + x.Question)
+            replace_dict = {"x": x}
+            for y in range(1, len(x.Correct) + 1):
+                replace_id = f"replace_{y}"
+                replace_content = Template(
+                    "<span class='blank'><span class='text_container' id='q{{x.id}}_{{y}}'>&nbsp;</span><span class='choice_cloud'>{% for i in range(len(x.Options[y-1])) %}<span class='choice'>{{x.Options[y-1][i]}}</span>{% endfor -%}</span></span>"
+                ).render(x=x, y=y, len=len)
+                replace_dict[replace_id] = replace_content
+            replace_result = html.render(**replace_dict)
+            question_datas.append(replace_result)
+        print("[Worker 2] Caching finished.")
+        initialized = True
+threading.Thread(target=thread_caching, daemon=True).start()
 
 @app.route("/dynamic/g2dynam.js")
+@login_required
 def gheader():
     hx = flask.request.args.get("hx")
     if hx not in allowhex:
@@ -34,6 +63,7 @@ def gheader():
 
 
 @app.route("/apis/game2/ecdhe", methods=['POST'])
+@login_required
 def ecd():
     hx = flask.request.form.get("hx")
     if hx not in game2key.keys() or (game2key[hx][2] - time.time() > 600):
@@ -49,6 +79,7 @@ def ecd():
 
 
 @app.route("/apis/game2/keep_key_alive", methods=["POST"])
+@login_required
 def kalive():
     hx = flask.request.form.get("hx")
     if hx not in game2key.keys() or (game2key[hx][2] - time.time() > 600):
@@ -58,6 +89,7 @@ def kalive():
 
 
 @app.route("/Game2")
+@login_required
 def leader():
     mdf = Model.player_position.query.filter_by(id=current_user.id).first()
     if mdf is not None:
@@ -75,7 +107,7 @@ def leader():
             flask.render_template("game/Game2.html",
                                   cg=("false" if flask.request.args.get("cg")
                                       == "0" else "true"),
-                                  hx=hexs))
+                                  hx=hexs, len=len, question_datas=question_datas))
         return resp
     else:
         mdf = Model.player_position.query.filter_by(id=current_user.id).first()
@@ -89,5 +121,5 @@ def leader():
             f = "false"
         Model.self_db.session.commit()
         resp = make_response(
-            flask.render_template("game/Game2.html", cg=f, hx=hexs))
+            flask.render_template("game/Game2.html", cg=f, hx=hexs, len=len, question_datas=question_datas))
         return resp
