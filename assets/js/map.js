@@ -1,5 +1,5 @@
 var btns = [
-  [1037, 949, function(event){window.clickable=false;bhole(1037, 949, function(){$.ajax(
+  [1002, 911, function(event){window.clickable=false;bhole(1033, 936, function(){$.ajax(
     {
       "url": "/changeLoc",
       "method": "POST",
@@ -18,8 +18,8 @@ var btns = [
         }
       }
     }
-  )}, function(){window.location="/Game1?cg=1";});}],
-  [813, 903, function(event){window.clickable=false;bhole(813, 903, function(){$.ajax(
+  )}, function(){window.location="/Game1?cg=1";});},"/assets/images/map/button1.jpg"],
+  [796, 867, function(event){window.clickable=false;bhole(827, 894, function(){$.ajax(
     {
       "url": "/changeLoc",
       "method": "POST",
@@ -38,8 +38,8 @@ var btns = [
         }
       }
     }
-  )}, function(){window.location="/Game2?cg=1";});}],
-  [1317, 615, function(event){window.clickable=false;bhole(1317, 615, function(){$.ajax(
+  )}, function(){window.location="/Game2?cg=1";});},"/assets/images/map/button2.jpg"],
+  [1283, 578, function(event){window.clickable=false;bhole(1314, 603, function(){$.ajax(
     {
       "url": "/changeLoc",
       "method": "POST",
@@ -58,6 +58,5 @@ var btns = [
         }
       }
     }
-  )}, function(){window.location="/Game3?cg=1";});}],
-  [1327, 1335, () => {}, function(event){alert('Forbidden City');}]
+  )}, function(){window.location="/Game3?cg=1";});},"/assets/images/map/button3.jpg"]
 ];

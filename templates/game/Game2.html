@@ -78,8 +78,9 @@
 
 .choice_cloud {
   /* background-color: yellow; */
-  display: none;
-  left: -50%;
+  display: flex;
+  flex-wrap: wrap;
+  left: -1px;
   position: absolute;
   top: 25px;
   cursor: pointer;
@@ -157,7 +158,8 @@
   box-shadow: 1px 2px 3px rgba(0,0,0,.3);
   color: white;
   margin: 0 5px 0 0;
-  padding: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
   white-space: nowrap;
   cursor: pointer;
 }
@@ -174,28 +176,26 @@ p.a{
 </style>
 {% endblock %}
 {% block script %}
-<!-- <script src='/dynamic/g2dynam.js?hx={{ hx }}'></script> -->
+<script src='/dynamic/g2dynam.js?hx={{ hx }}'></script>
 <script src="/assets/js/question_fetcher.js"></script>
 {% endblock %}
 
 {% block content %}
 <div id="container" class="noselect" style = "background-image:url(https://media.istockphoto.com/id/1269592684/vector/hud-ui-gui-futuristic-user-interface-screen-elements-high-tech-screen-for-video-game-sci-fi.jpg?s=170667a&w=0&k=20&c=OLFFN3o7ru9zZHql3zpuk8dXXNy9t_08XcDLzF8UE3c=);background-position: center;background-size: cover;;background-repeat:no-repeat">
   
-  <div id="mainzone" style="height: calc(100% - 60px); width: 80%; display: none; border: 30px ridge rgba(128,121,126,1); border-radius: 0px; margin: auto;">
-    <!-- <video muted loop style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);">
-      <source src="https://images.theconversation.com/files/223729/original/file-20180619-126566-1jxjod2.jpg?ixlib=rb-1.1.0&q=45&auto=format&w=1200&h=675.0&fit=crop">
-    </video> <- Keep this, someone's job-->
+  <div id="mainzone" style="height: calc(100% - 60px); width: 80%; display: none; border: 30px ridge rgba(128,121,126,1); border-radius: 0px; margin: auto; overflow-y: auto">
+    <video autoplay muted loop style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); height: 100vh; width: 100vw; z-index: -1">
+      <source src="/assets/video/Games/game2/bg2.mp4" />
+    </video>
     <div style="background-color: rgba(21, 14, 87, 0.7); border-radius: 5px; color: white; margin: 40px auto 20px auto; padding: 50px;padding-bottom:20px; width: 80%;color:aquamarine;font:normal 1.1em RetroGaming;border-color: coral;border:solid">
   <strong style="font-size:20px">Game 2: The Three forges in Changjiang</strong>
   <p style="font-size:15px" >Click the blanks to view pop-up word choices.</p>
 </div>
 <div class="content_container">
-  {% for i in range(len(question_datas)) %}
-    {{ question_datas[i]|safe }}<br></br><hr></hr>
-  {% endfor -%}
-  
-<button id="demo"  style="background-color:mediumaquamarine;cursor: pointer;color:blue"onclick="myFunction()">confirm</button>
-<input type=button style="background-color:mediumaquamarine;cursor: pointer;color:blue"onClick="parent.location='https://LWMotherland.motszhin.repl.co/map'"
+  <div id="wrapper">
+  </div>
+<button id="demo"  style="background-color:mediumaquamarine;cursor: pointer;color:blue">confirm</button>
+<input type=button style="background-color:mediumaquamarine;cursor: pointer;color:blue"onClick="parent.location='/map'"
  value='return to map'></input>
 </div>
 </div>
@@ -211,6 +211,7 @@ p.a{
       $("#container").css("width", (4/3*100)+"vh");
       $("#container").css("height","100vh");
     }
+    Array.from($(".choice_cloud")).forEach((elem) => {$(elem).css("width", ($(".content_container")[0].getBoundingClientRect().width + $(".content_container")[0].getBoundingClientRect().x - elem.getBoundingClientRect().x) + "px");});
   }
   var resizeObserver = new ResizeObserver(chan);
   resizeObserver.observe(document.body);
@@ -239,82 +240,6 @@ p.a{
   // Load jquery
 // https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js
 
-var all_choices = $(".blank")
-  .parent()
-  .find(".choice_cloud");
-
-$(".content_container").on("click", ".blank", function() {
-  event.stopPropagation(); // Prevent the 'clicking anywhere hides it' function
-  all_choices.hide("slow");
-  var choiceCloud = $(this).find(".choice_cloud");
-  choiceCloud.toggle();
-});
-
-$(".choice").click(function(event) {
-  var myChoice = $(event.target);
-  var isChoice = myChoice.is(".choice");
-  event.stopPropagation(); // Prevent the 'clicking anywhere hides it' function
-  if (isChoice) {
-    //make sure I am a .choice element
-    myChoice.closest(".blank")
-      .find(".text_container")
-      .text(myChoice.text());
-    myChoice.parent().hide();
-  }
-});
-
-// Clicking anywhere else hides it
-$(document).on("click", function() {
-  $(".choice_cloud").hide("slow");
-});
-const q1 = document.getElementById('q1');
-const q2 = document.getElementById('q2');
-const q3 = document.getElementById('q3');
-const q4 = document.getElementById('q4');
-const q5 = document.getElementById('q5');
-const q6 = document.getElementById('q6');
-console.log(q6)
-function myFunction(){
-  var a = ""
-  var mark = 0
-  if (q1.textContent.includes('inalienable')) {
-  a=a+"\n"+('✅ Q1 correct');
-  mark=mark+1
-} else {
-  a=a+"\n"+('⛔️ Q1 wrong');
-}
-  if (q2.textContent.includes('50')) {
-  a=a+"\n"+('✅ Q2 correct');
-  mark=mark+1
-} else {
-  a=a+"\n"+('⛔️ Q2 wrong');
-}
-  if (q3.textContent.includes('a')) {
-  a=a+"\n"+('✅ Q3 correct');
-  mark=mark+1
-} else {
-  a=a+"\n"+('⛔️ Q3 wrong');
-  }
-  if (q4.textContent.includes('by')) {
-  a=a+"\n"+('✅ Q4 correct');
-  mark=mark+1
-} else {
-  a=a+"\n"+('⛔️ Q4 wrong');
-}
-  if (q5.textContent.includes('on')) {
-  a=a+"\n"+('✅ Q5 correct');
-  mark=mark+1
-} else {
-  a=a+"\n"+('⛔️ Q5 wrong');
-}
-  if (q6.textContent.includes('Jay Leung')) {
-  a=a+"\n"+('✅ Q6 correct');
-  mark=mark+1
-} else {
-  a=a+"\n"+('⛔️ Q6 wrong');
-  }
-  console.log(a)
-  alert(a+"\nmark: "+mark)
-}
+// Original code moved to Game2.js
 </script>
 {% endblock %}

@@ -78,6 +78,8 @@ def updGame1():
     if len(decd) == 0:
         flask.abort(403)
     last_bit = decd[-1]
+    if (last_bit > 15 or len(list(set(decd[-last_bit:]))) > 1):
+        flask.abort(403)
     realdata = decd[:-last_bit]
     try:
         readable = json.loads(realdata.decode())

@@ -1,7 +1,7 @@
 from flask import Blueprint
 import flask
 from flask import make_response
-from flask_login import current_user
+from flask_login import current_user, login_required
 from models.app_db import Model
 from modules import ecdhe
 import time
@@ -10,9 +10,9 @@ import uuid
 import hashlib
 import base64
 from Crypto.Cipher import AES
-from jinja2 import Environment, BaseLoader, Template
+from jinja2 import Environment, BaseLoader
 from flask import current_app
-import threading
+import binascii
 
 initialized = False
 
@@ -21,32 +21,10 @@ app = Blueprint('app_game2', __name__)
 game2key = {}
 hexmap = {}
 allowhex = []
-question_datas = []
 
-def thread_caching():
-    global question_datas, initialized
-    if not getattr(Model, "_initialized", False):
-        print("[Worker 2] Waiting for model initialization")
-        while not getattr(Model, "_initialized", False):
-            pass
-    with Model.curr_app.app_context():
-        print("[Worker 2] Caching Game 2 Question")
-        question_data = Model.Game2Q.query.all()
-        print("[Worker 2] Preprocessing Game 2...")
-        for x in question_data:
-            html = Template("{{x.id}}.  " + x.Question)
-            replace_dict = {"x": x}
-            for y in range(1, len(x.Correct) + 1):
-                replace_id = f"replace_{y}"
-                replace_content = Template(
-                    "<span class='blank'><span class='text_container' id='q{{x.id}}_{{y}}'>&nbsp;</span><span class='choice_cloud'>{% for i in range(len(x.Options[y-1])) %}<span class='choice'>{{x.Options[y-1][i]}}</span>{% endfor -%}</span></span>"
-                ).render(x=x, y=y, len=len)
-                replace_dict[replace_id] = replace_content
-            replace_result = html.render(**replace_dict)
-            question_datas.append(replace_result)
-        print("[Worker 2] Caching finished.")
-        initialized = True
-threading.Thread(target=thread_caching, daemon=True).start()
+initialized = True
+print("[Worker 2] Disabled.")
+
 
 @app.route("/dynamic/g2dynam.js")
 @login_required
@@ -57,9 +35,36 @@ def gheader():
     allowhex.remove(hx)
     p1, p2 = tuple(game2key[hx][0][1])
     rtemplate = Environment(loader=BaseLoader).from_string(
-        open("dynamic_file/Game2%s.js" %
-             ("" if current_app.config["T_DEBUG"] else "_Obfuscation")).read())
+        open(
+            f"dynamic_file/Game2{('' if current_app.config['T_DEBUG'] else '_Obfuscation')}.js"
+        ).read())
     return rtemplate.render(hx=hx, px=hex(p1), py=hex(p2))
+
+
+@app.route("/apis/game2/fetch", methods=['POST'])
+@login_required
+def fet():
+    hx = flask.request.form.get("hx")
+    if hx not in game2key.keys() or (game2key[hx][2] - time.time() > 600):
+        flask.abort(403)
+    if game2key[hx][1] is None:
+        flask.abort(403)
+    question_data = Model.Game2Q.query.all()
+    retD = []
+    for x in question_data:
+        retD.append([x.id, x.Question, x.Options, x.Correct])
+    retst = json.dumps(retD)
+    bytst = retst.encode("utf-8")
+    padst = bytst + (
+        (AES.block_size - (len(bytst) % AES.block_size)) *
+        chr(AES.block_size - len(bytst) % AES.block_size)).encode()
+    cipher = AES.new(game2key[hx][1][0], AES.MODE_CBC, game2key[hx][1][1])
+    print("IV =", binascii.hexlify(game2key[hx][1][1]))
+    game2key[hx][1][1] = hashlib.sha256(game2key[hx][1][1]).digest()[:16]
+    print("IV ->", binascii.hexlify(game2key[hx][1][1]))
+    senst = cipher.encrypt(padst)
+    b64st = base64.b64encode(senst)
+    return b64st.decode()
 
 
 @app.route("/apis/game2/ecdhe", methods=['POST'])
@@ -88,12 +93,68 @@ def kalive():
     return "OK"
 
 
+@app.route("/apis/game2/hand_in", methods=["POST"])
+@login_required
+def hand():
+    hx = flask.request.form.get("hx")
+    if hx not in game2key.keys() or (game2key[hx][2] - time.time() > 600):
+        flask.abort(403)
+    if game2key[hx][1] is None:
+        flask.abort(403)
+    stud_input_b = flask.request.form.get("raw")
+    try:
+        stud_input_enc = base64.b64decode(stud_input_b.encode())
+    except:
+        flask.abort(400)
+    cipher = AES.new(game2key[hx][1][0], AES.MODE_CBC, game2key[hx][1][1])
+    decs = cipher.decrypt(stud_input_enc)
+    if len(decs) == 0:
+        flask.abort(403)
+    last_bit = decs[-1]
+    if (last_bit > 15 or len(list(set(decs[-last_bit:]))) > 1):
+        flask.abort(403)
+    stud_input_raw = decs[:-last_bit]
+    try:
+        stud_input = json.loads(stud_input_raw.decode())
+    except:
+        print("Decode failed")
+        print(stud_input_raw)
+        flask.abort(400)
+    question_data = Model.Game2Q.query.all()
+    if len(question_data) != len(stud_input):
+        print("Length incorrect")
+        print(f"{len(question_data)} != {len(stud_input)}")
+        flask.abort(400)
+    marks = 0
+    for question in range(len(question_data)):
+        if len(question_data[question].Options) != len(stud_input[question]):
+            flask.abort(400)
+        for n in range(len(question_data[question].Options)):
+            if len(question_data[question].Options[n]
+                   ) < stud_input[question][n]:
+                flask.abort(400)
+            if question_data[question].Correct[n] == stud_input[question][n]:
+                marks += 1
+    t = Model.Game2Details.query.filter_by(id=current_user.id).first()
+    if t is None:
+        new = Model.Game2Details(current_user.id, stud_input, marks)
+        Model.self_db.session.add(new)
+    else:
+        t.details = stud_input
+        t.marks = marks
+    mdf = Model.player_position.query.filter_by(id=current_user.id).first()
+    if (mdf.preventRedone < 2):
+        mdf.preventRedone = 2
+    Model.self_db.session.commit()
+    return "OK"
+
+
 @app.route("/Game2")
 @login_required
 def leader():
     mdf = Model.player_position.query.filter_by(id=current_user.id).first()
     if mdf is not None:
-        if mdf.preventRedone >= 2:
+        if mdf.preventRedone != 1:
             return flask.redirect("/map")
     hexs = uuid.uuid4().hex
     while hexs in game2key.keys() and game2key[hexs][2] - time.time() <= 600:
@@ -104,10 +165,13 @@ def leader():
     hexmap[current_user.id] = hexs
     if flask.request.args.get("cg"):
         resp = make_response(
-            flask.render_template("game/Game2.html",
-                                  cg=("false" if flask.request.args.get("cg")
-                                      == "0" else "true"),
-                                  hx=hexs, len=len, question_datas=question_datas))
+            flask.render_template(
+                "game/Game2.html",
+                cg=("false"
+                    if flask.request.args.get("cg") == "0" else "true"),
+                hx=hexs,
+                len=len,
+            ))
         return resp
     else:
         mdf = Model.player_position.query.filter_by(id=current_user.id).first()
@@ -121,5 +185,10 @@ def leader():
             f = "false"
         Model.self_db.session.commit()
         resp = make_response(
-            flask.render_template("game/Game2.html", cg=f, hx=hexs, len=len, question_datas=question_datas))
+            flask.render_template(
+                "game/Game2.html",
+                cg=f,
+                hx=hexs,
+                len=len,
+            ))
         return resp

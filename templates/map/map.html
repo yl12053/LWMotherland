@@ -24,6 +24,7 @@
 </script>
 <script src="/assets/js/map.js"></script>
 <script>
+  var btnbtr = [];
   window.locked = true;
   var stack = [];
   function download_sprite_as_png(renderer, sprite, fileName) {
@@ -117,7 +118,7 @@
   var vspr = new PIXI.Sprite( vtext );
   var bappend = [];
   var btnc = 0;
-  var btnLimit = -1;
+  var btnLimit = {{ rerr }};
   for (var b of btns){
     btnc++;
     let bs = new PIXI.Sprite();
@@ -125,16 +126,30 @@
     bs.interactive = true;
     if (btnc <= btnLimit){
       bs.callback = (event) => {alert("locked")};
+      btnbtr.push(bs);
     } else {
       bs.callback = b[2];
     }
-    bs.hitArea = new PIXI.Ellipse(b[0], b[1], 31, 25);
+    bs.hitArea = new PIXI.Ellipse(31, 25, 31, 25);
     bs.on('pointerdown', (event) => {if (window.clickable){return bs.callback(event)}});
     bs.internal_x = b[0];
+    bs.x = b[0];
+    bs.y = b[1];
     bs.internal_y = b[1];
+    if (b[3]){
+      bs.texture = PIXI.Texture.from(b[3]);
+    } else {
+      bs.texture = PIXI.Texture.WHITE;
+    }
+    bs.alpha = 0;
+    bs.zIndex = 1;
+    bs.width = 62;
+    bs.height = 50;
     app.stage.addChild(bs);
   }
   app.stage.addChild(vspr);
+  vspr.zIndex = 0;
+  app.stage.sortChildren();
   app.ticker.add((delta) => {
     let a = stack.shift();
     if (a){
@@ -146,6 +161,9 @@
   videoControler = vspr.texture.baseTexture.resource.source;
   videoControler.muted = true;
   videoControler.onended = function (){
+    for (var b of btnbtr){
+      b.alpha = 1;
+    }
     {% endif %}
     window.clickable = true;
   {% if type_asset == "video" %}

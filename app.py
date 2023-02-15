@@ -1,4 +1,6 @@
 import flask
+import json
+from flask_socketio import SocketIO, join_room, emit
 from flask import render_template
 from flask_sqlalchemy import SQLAlchemy
 from models.app_db import init, Model
@@ -15,6 +17,8 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.session_protection = "strong"
 login_manager.login_view = 'homepage'
+socketio = SocketIO(app)
+
 if len(sys.argv) and sys.argv[-1] == "debug":
     app.config["T_DEBUG"] = True
 else:
@@ -92,8 +96,7 @@ def map():
                            type_asset="video",
                            width="2020",
                            height="1520",
-                           rerr=str(rerr)
-                          )
+                           rerr=str(rerr))
 
 
 for x in apps:
@@ -108,6 +111,36 @@ def asroot(path):
                                      as_attachment=False,
                                      download_name=None)
 
+
+@app.route(app.static_url_path + '/' + '<path:path>' + ".ts")
+def jsonl_mime_type(path):
+    return flask.send_from_directory(directory=app.static_folder,
+                                     path=path + ".ts",
+                                     mimetype="text/javascript")
+
+
+def hand(t, u):
+    with app.app_context():
+        usr = Model.Users.query.filter_by(id=u).first()
+        name = usr.used_name
+    socketio.emit('sdone', {"name": name, "time": t, "id": u}, to='manag')
+
+
+@socketio.on('join')
+def j(d):
+    join_room("manag")
+    print("[SocketIO] Teacher emitted event join")
+    emit('joined', {})
+
+
+@socketio.on('connect')
+def onCon(conn):
+    print("[SocketIO] Teacher joined")
+    emit('ableToJoin', {})
+
+
+Model.handler = hand
+
 print("[Main] Runway Clear!")
 if __name__ == "__main__":
-    app.run("0.0.0.0", 8080)
+    app.run("0.0.0.0", 5000)
