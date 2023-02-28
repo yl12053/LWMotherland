@@ -140,10 +140,10 @@
             var qobj = der[trueNum];
             $("#question_container").text(qobj[1]);
             var currSel = [undefined];
-            btns[qnum].map((btn, shuf) => {$("#btn"+btn).text(qobj[shuf+2]).click(() => {if (cdobj.getRemains() > 0){selection(btn); currSel[0] = btn;}});});
+            btns[qnum].map((btn, shuf) => {$("#inner"+btn).text(qobj[shuf+2]).parent().click(() => {if (cdobj.getRemains() > 0){selection(btn); currSel[0] = btn;}});});
             function correct_handler(selec){
               cdobj.pause();
-              cdobj.addSeconds(15);
+              // cdobj.addSeconds(15);
               $(".btns").addClass("wrong_nonexplict");
               $(".btns.activ").removeClass("activ wrong_nonexplict").addClass("correct");
               atta(selec, "correct");
@@ -152,7 +152,7 @@
             }
             function incorrect_handler(selec, c, a){
               cdobj.pause();
-              cdobj.addSeconds(15);
+              // cdobj.addSeconds(15);
               $(".btns").addClass("wrong_nonexplict");
               $(".btns.activ").removeClass("activ wrong_nonexplict").addClass("wrong");
               $("#btn"+a).addClass("correct").removeClass("wrong_nonexplict");
@@ -198,7 +198,7 @@
             try {
               var der = JSON.parse(CryptoJs.enc.Utf8.stringify(dec));
               var cdobj = createCountdown(100, 100, 100, 10, 10);
-              cdobj.setCountdownSec(90);
+              cdobj.setCountdownSec(600);
               cdobj.app.view.style.height = "100%";
               cdobj.app.view.style.width = "100%";
               $("#countdown_container")[0].appendChild(cdobj.app.view);

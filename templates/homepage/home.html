@@ -234,15 +234,17 @@
 
 <table class = "simile-a" style="border: none">
   <tr style="border: none">
-    <td style="border: none"> user name : </td>
+    <td style="border: none"> Username : </td>
     <td style="border: none;text-align: right;"> {% if current_user.used_name == "" or current_user.used_name == None %} {{ current_user.clas }} {{ current_user.cno }} {% else %} {{ current_user.used_name }} {% endif %}</td>
   </tr>
+  {% if current_user.clas != None %}
   <tr style="border: none">
-    <td style="border: none"> class & number : </td>
+    <td style="border: none"> Class & number : </td>
     <td style="border: none;text-align: right;"> {{ current_user.clas }} {{ current_user.cno }} </td>
   </tr>
+  {% endif %}
   <tr style="border: none">
-    <td style="border: none"> group number : </td>
+    <td style="border: none"> Group : </td>
     <td style="border: none;text-align: right;"> {{ current_user.grp }} </td>
   </tr>
 </table>

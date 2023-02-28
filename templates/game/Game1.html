@@ -1,4 +1,5 @@
- {% extends 'base/base.html' %}
+
+{% extends 'base/base.html' %}
 
 {% block title %}Game 1{% endblock %}
 
@@ -35,10 +36,16 @@
     filter: brightness(0.7);
   }
   .btns {
-    display: table-cell;
-    vertical-align: middle;
+    /* display: table-cell; */
+    display: flex;
+    /* vertical-align: middle; */
     cursor: pointer;
     text-align: center;
+    width: 100%;
+    height: 100%;
+    justify-content: flex-end;
+    align-items: center;
+    overflow-y: auto;
   }
   .abut:hover {
     filter: brightness(1.1);
@@ -70,6 +77,17 @@
         -ms-user-select: none;
             user-select: none;
   }
+  .inner_class {
+    width: 20vw;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+  }
+  #btnconfirm {
+    justify-content: center;
+  }
 </style>
 {% endblock %}
 {% block script %}
@@ -97,13 +115,21 @@ background-repeat: no-repeat;text-align: center; overflow: hidden">
           <td style="padding: 0; padding-top: 0.5%; padding-left: 0px; width: 50%;">
             <div style="display: table; height: 100%; width: 100%">
               <div id="btn1" class="btns abut" style="background-image: url(/assets/images/hat.png); background-size: contain;background-position: center ;
-background-repeat: no-repeat;text-align: center;font-size: 30px;color:white;">1</div>
+background-repeat: no-repeat;text-align: center;font-size: 30px;color:white;">
+                <div id="inner1" class='inner_class'>
+                  1
+                </div>
+</div>
             </div>
           </td>
           <td style="padding: 0; padding-top: 0.5%; padding-right: 0px; width: 50%;">
             <div style="display: table; height: 100%; width: 100%">
               <div id="btn2" class="btns abut" style="background-image: url(/assets/images/cat.png); background-size: contain;background-position: center ;
-background-repeat: no-repeat;text-align: center;font-size: 30px;color:white;">2</div>
+background-repeat: no-repeat;text-align: center;font-size: 30px;color:white;">
+                <div id="inner2" class='inner_class'>
+                  2
+                </div>
+</div>
             </div>
           </td>
         </tr>
@@ -111,13 +137,21 @@ background-repeat: no-repeat;text-align: center;font-size: 30px;color:white;">2<
           <td style="padding: 0; padding-bottom: 0.5%; padding-left: 0px; width: 50%;">
             <div style="display: table; height: 100%; width: 100%">
               <div id="btn3" class="btns abut" style="background-image: url(/assets/images/rat.png); background-size: contain;background-position: center ;
-background-repeat: no-repeat;text-align: center;font-size: 30px;color:white;">3</div>
+background-repeat: no-repeat;text-align: center;font-size: 30px;color:white;">
+                <div id='inner3' class='inner_class'>
+                  3
+                </div>
+</div>
             </div>
           </td>
           <td style="padding: 0; padding-bottom: 0.5%; padding-right: 0px; width: 50%;">
             <div style="display: table; height: 100%; width: 100%">
               <div id="btn4" class="btns abut" style="background-image: url(/assets/images/rabbit.png); background-size: contain;background-position: center ;
-background-repeat: no-repeat;text-align: center;font-size: 30px;color:white;">4</div>
+background-repeat: no-repeat;text-align: center;font-size: 30px;color:white;">
+                <div id='inner4' class='inner_class'>
+                  4
+                </div>
+</div>
             </div>
           </td>
         </tr>
@@ -183,10 +217,17 @@ background-repeat: no-repeat;text-align: center;font-size: 30px;color:white;" hr
     if (document.documentElement.clientHeight / 3 > document.documentElement.clientWidth / 4){
       $("#container").css("width", "100vw");
       $("#container").css("height", (3/4*100) + "vw");
+      $(".inner_class").css("width", "31vw");
     } else {
       $("#container").css("width", (4/3*100)+"vh");
       $("#container").css("height","100vh");
+      $(".inner_class").css("width", "41vh");
     }
+    var fs = Math.floor($(".inner_class").first().width()*5/60) - 1;
+    if (fs < 0){
+      fs = 1;
+    }
+    $(".inner_class").css("font-size", fs + "px");
   }
   var resizeObserver = new ResizeObserver(chan);
   resizeObserver.observe(document.body);

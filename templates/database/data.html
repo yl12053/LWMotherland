@@ -1,0 +1,223 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Database Editor</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.3.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.10/lodash.min.js"></script>
+    <style>
+      html, body {
+        height: 100%;
+        background-color: var(--bs-body-bg);
+      }
+      .withBorder {
+        border: 1px;
+        border-style: solid;
+        border-color: var(--bs-border-color);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container-fluid" style="height: 100%; padding: 0;">
+      <div class="col-12 fs-2 p-3 text-bg-warning" style="height: 15%; display: flex; justify-content: left; align-items: center;" id="hparent">
+        <div id="header">
+          Fetching Data
+        </div>
+      </div>
+      <div class="row" style="height: 85%; width: 100%">
+        <div class="col-3 withBorder" style="height: 100%; overflow-y: auto; padding: 12px; padding-left: 24px" id="tableSele">
+          <div class="list-group" style="width: 100%" role="group" id="btGr">
+          </div>
+        </div>
+        <div class="col-9 withBorder" style="height: 100%; overflow: auto" id="tableDetail">
+        </div>
+      </div>
+    </div>
+    <div class="modal" tabindex="-1" id="recordEdit">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Record Edit</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>Modal body text goes here.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+  </body>
+  
+  <script>
+    var currentPage = 1;
+    var maxPage = 0;
+    var removeClassUniversal = "";
+    for (var e of ["warning", "primary", "info", "danger"]){
+      removeClassUniversal += "text-bg-" + e + " ";
+    }
+    function setClass(element, name){
+      return element.removeClass(removeClassUniversal).addClass("text-bg-" + name);
+    }
+    function editRow(row){
+      var modal = new bootstrap.Modal("#recordEdit", {
+        keyboard: false
+      });
+    }
+    var viewing = null;
+    var globalLock = true;
+    var tableCache = {};
+    function refreshButton(arg1){
+      if (arg1 !== true){
+        $("#btGr").empty();
+        setClass($("#header").text("Refreshing table list").parent(), "warning");
+      }
+      $.ajax({
+        "url": "/dbm/readTable"
+      }).then((data)=>{
+        $("#header").text("There are " + data.length + " tables.");
+        $("#hparent").removeClass("text-bg-warning").addClass("text-bg-primary");
+        for (var s of data){
+          $("#btGr").append($("<button type='button' class='list-group-item list-group-item-action'>").text(s).attr("tableName", s).click(function(){
+            if (globalLock){
+              viewTable($(this).attr("tableName"));
+            }
+          }));
+        }
+      });
+    }
+    refreshButton(true);
+    function viewTable(name){
+      $("#btGr > button").removeClass("active");
+      $("#btGr > button[tableName='"+name+"']").addClass("active");
+      if (viewing != name){
+        globalLock = false;
+        viewing = name;
+        setClass($("#header").text("Fetching details of table "+viewing).parent(), "warning");
+        $("#tableDetail").empty();
+        $.ajax({
+          "url": "/dbm/getDetails",
+          "method": "POST",
+          "data": {
+            "table": viewing
+          }
+        }).then((data) => {
+          if (data.Error){
+            var pg1 = $("<p>").text("Error "+data.Code+": "+data.Statement);
+            var pg2 = $("<p>").text("It is recommend to ");
+            var a1 = $("<button class='btn btn-primary'>").text("Refresh the table list").click(refreshButton);
+            pg2.append(a1);
+            var d1 = $("<div class='row'>").append(pg2);
+            var stt = $("<div>").append(pg1, d1);
+            var outer = $("<div style='display: flex; height: 100%; width: 100%; justify-content: center; align-items: center'>");
+            outer.append(stt);
+            setClass($("#tableDetail").empty().append(outer), "info");
+            setClass($("#header").text("Error on fetching details of table "+viewing).parent(), "danger");
+            viewing = null;
+            $("#btGr > button").removeClass("active");
+            globalLock = true;
+          } else {
+            setClass($("#header").text("There are total " + data.Count + " record" + (data.Count>1?'s':'') + " currently.").parent(), 'primary');
+            if (!(tableCache[viewing] && _.isEqual(tableCache[viewing]["Original"], data.Column))){
+              var newObj = {};
+              newObj.Original = data.Column;
+              newObj.PrimaryKey = [];
+              newObj.ColumnDetails = [];
+              newObj.reverseSearch = {};
+              for (var d=0; d<data.Column.length; d++){
+                var c = data.Column[d];
+                var nObj2 = {}
+                nObj2.name = c[0];
+                nObj2.type = c[1];
+                nObj2.nullable = (c[2] == "YES");
+                nObj2.primary = (c[3] == "PRI");
+                if (c[3] == "PRI"){
+                  newObj.PrimaryKey.push(c[0]);
+                }
+                nObj2.default = c[4];
+                nObj2.extra = c[5];
+                newObj.reverseSearch[c[0]] = d;
+                newObj.ColumnDetails.push(nObj2);
+              }
+              tableCache[viewing] = newObj;
+            }
+            var tableObj = tableCache[viewing];
+            currentPage = 1;
+            var tab = $("<table class='table table-hover'>");
+            var headline = $("<thead>");
+            var first = $("<tr>");
+            for (var g of tableObj.ColumnDetails){
+              first.append($("<th scope='col'>").text(g.name));
+            }
+            headline.append(first);
+            tab.append(headline);
+            var tbod = $("<tbody id='recordPlace'>");
+            tab.append(tbod);
+            var div1 = $("<div style='height: 80%'>").append(tab);
+            var div2 = $("<div style='height: 10%'>");
+            var outerdiv3 = $("<div style='height: 10%'>");
+            var div3 = $("<div style='display: flex; width: 100%; height: max-content; align-items: center; justify-content: center;'>");
+            outerdiv3.append(div3);
+            var divPage = $("<div class='btn-toolbar' role='toolbar'>");
+            var divGroup1 = $("<div class='btn-group' role='group'>");
+            var btnff = $('<button type="button" id="f2" class="btn btn-primary"></button>').text("<<");
+            var btnff1 = $('<button type="button" id="f1" class="btn btn-primary"></button>').text("<");
+            divGroup1.append(btnff, btnff1);
+            divPage.append(divGroup1);
+            var inputGroup = $("<div class='input-group'>");
+            var inputp = $('<input type="number" id="ipp" min=1 class="form-control">').attr("max", Math.ceil(data.Count / 10)).val(1);
+            var inputt = $('<div class="input-group-text"></div>').text("/"+Math.ceil(data.Count / 10));
+            inputGroup.append(inputp, inputt);
+            divPage.append(inputGroup);
+            var divGroup2 = $("<div class='btn-group' role='group'>");
+            var btnrr = $('<button type="button" id="r2" class="btn btn-primary"></button>').text(">>");
+            var btnrr1 = $('<button type="button" id="r1" class="btn btn-primary"></button>').text(">");
+            divGroup2.append(btnrr1, btnrr);
+            divPage.append(divGroup2);
+            div3.append(divPage);
+            $("#tableDetail").append(div1, div2, outerdiv3);
+            maxPage = Math.ceil(data.Count / 10);
+            printTable();
+          }
+        });
+      }
+    }
+    function printTable(){
+      $("#f2").prop("disabled", (currentPage == 1));
+      $("#f1").prop("disabled", (currentPage == 1));
+      $("#r2").prop("disabled", (currentPage == maxPage));
+      $("#r1").prop("disabled", (currentPage == maxPage));
+      var offset = (currentPage - 1) * 10;
+      $.ajax({
+        "url": "/dbm/getRecords",
+        "method": "POST",
+        "data": {
+          "table": viewing,
+          "offset": offset,
+          "limit": 10
+        }
+      }).then((data) => {
+        $("#recordPlace").empty();
+        for (var rec of data.Result){
+          var rowObject = $("<tr>");
+          var th = $("<th scope='row'>").text(rec[0]);
+          rowObject.append(th);
+          for (var oth of rec.slice(1)){
+            if (oth != null){
+              var td = $("<td>").text(oth);
+            } else {
+              var td = $("<td class='text-danger'>").text("(Empty Cell)");
+            }
+            rowObject.append(td);
+          }
+          $("#recordPlace").append(rowObject);
+        }
+        globalLock = true;
+      });
+    }
+  </script>
+</html>

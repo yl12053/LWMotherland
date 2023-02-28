@@ -160,6 +160,8 @@
   {% if type_asset == "video" %}
   videoControler = vspr.texture.baseTexture.resource.source;
   videoControler.muted = true;
+  // videoControler.control = true;
+  $(videoControler).attr('src', "{{ asset_file }}");
   videoControler.onended = function (){
     for (var b of btnbtr){
       b.alpha = 1;
@@ -168,7 +170,14 @@
     window.clickable = true;
   {% if type_asset == "video" %}
   }
-  videoControler.play();
+  console.log(videoControler.src);
+  function p(){
+    var res=videoControler.play();
+    res.then(()=>{console.log("fulfill")}, ()=>{
+      setTimeout(p, 1);
+    });
+  }
+  p();
   {% endif %}
 </script>
 {% endblock %}

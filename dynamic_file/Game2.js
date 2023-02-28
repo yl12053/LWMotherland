@@ -51,27 +51,37 @@
     var totht = "";
     var answer_storage = {};
     var answer_handin = [];
+    var mapA2C = window.localStorage.getItem("P^=p+PKZ*D9U}=i#");
+    if (mapA2C == null || JSON.parse(mapA2C).length != dec_json.length){
+      var fCac = [...Array(dec_json.length).keys()];
+      fCac.sort(() => Math.random() - 0.5);
+      window.localStorage.setItem("P^=p+PKZ*D9U}=i#", JSON.stringify(fCac));
+    } else {
+      fCac = JSON.parse(mapA2C);
+    }
+    
+    dec_json.sort((d1, d2) => (fCac[d1[0]-1] - fCac[d2[0]-1]));
     for (var x of dec_json){
-      var html = `${x[0]}.  `;
+      var html = `<br><br><br><br><br>${fCac[x[0]-1]+1}.  `;
       var replace_obj = {};
       var answer_temp = [];
       for (var y = 1; y <= x[3].length; y++){
         var replace_regex = "{{ +replace_" + y + " *\\| *safe *}}";
-        var replace_content = `<span class='blank'><span class='text_container' id='q${x[0]}_${y}'>&nbsp;</span><span style='display: none' class='choice_cloud'>`;
-        answer_storage[`${x[0]}_${y}`] = -1;
+        var replace_content = `<span class='blank'><span class='text_container' id='q${fCac[x[0]-1]+1}_${y}'>&nbsp;</span><span style='display: none' class='choice_cloud'>`;
+        answer_storage[`${fCac[x[0]-1]+1}_${y}`] = -1;
         answer_temp[y-1] = -1;
         for (var i = 0; i < x[2][y-1].length; i++){
-          replace_content = replace_content + `<span attrs='${x[0]}_${y}_${i}' class='choice'>${escape(x[2][y-1][i])}</span>`;
+          replace_content = replace_content + `<span attrs='${fCac[x[0]-1]+1}_${y}_${i}' class='choice'>${escape(x[2][y-1][i])}</span>`;
         }
         replace_content = replace_content + "</span></span>";
         replace_obj[replace_regex] = replace_content;
       }
-      answer_handin.push(answer_temp);
+      answer_handin[x[0]-1] = answer_temp;
       var toBe = x[1];
       for (var reg in replace_obj){
         toBe = toBe.replace(new RegExp(reg), replace_obj[reg]);
       }
-      html += toBe + "<br></br><hr></hr>";
+      html += toBe + "<br><br><br><br><hr></hr>";
       totht += html;
     }
     $("#wrapper")[0].innerHTML = totht;
@@ -102,7 +112,11 @@
         var ql = sol.split("_");
         var choice = splitOnlast(attrs, "_")[1];
         answer_storage[sol] = Number(choice);
-        answer_handin[Number(ql[0])-1][Number(ql[1])-1] = Number(choice);
+        var reverseSearch = JSON.parse(window.localStorage.getItem("P^=p+PKZ*D9U}=i#"));
+        reverseSearch = [...Array(reverseSearch.length).keys()].map((v) => reverseSearch.indexOf(v));
+        console.log(reverseSearch);
+        console.log(ql[0]+"_"+ql[1]+"->"+(reverseSearch[Number(ql[0])-1]+1)+"_"+ql[1])
+        answer_handin[reverseSearch[Number(ql[0])-1]][Number(ql[1])-1] = Number(choice);
       }
     });
     
@@ -128,6 +142,7 @@
         count++;
       }
       var handin_str = JSON.stringify(answer_handin);
+      console.log(answer_handin);
       var res = CryptoJs.AES.encrypt(handin_str, CryptoJs.enc.Hex.parse(key), { iv: ivdFinal });
       var base = CryptoJs.enc.Base64.stringify(res.ciphertext);
       $.ajax({

@@ -1,0 +1,179 @@
+ {% extends 'base/base.html' %}
+
+{% block title %}Passcode Challenge{% endblock %}
+
+{% block style %}
+<style>
+  .noselect {
+    -webkit-touch-callout: none;
+      -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+            user-select: none;
+  }
+  #container {
+    background-image: url(/assets/images/games/gameb1/bg.png);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: none;
+    margin: 0px;
+    overflow: hidden;
+    background-size: contain;
+  }
+  body {
+    margin: 0px;
+    background-color:black;
+  }
+  .activ {
+    border: 5px solid green;
+  }
+  .spantag {
+    color: black;
+    background-color:white;
+    border-radius:3px;
+  }
+  .lbs {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    flex-wrap: wrap;
+    text-align: center;
+    column-gap: 7px;
+    align-content: flex-start;
+  }
+  .card {
+    height: max-content;
+  }
+  .cardimg {
+  }
+  #hbut {
+    cursor: pointer;
+  }
+  
+</style>
+{% endblock %}
+
+{% block script %}
+{% endblock %}
+
+{% block content %}
+<div id="container" class = "noselect">
+  <div style="width: 100%; height: 50%; position: relative">
+    <div style="position: absolute; left: 0; bottom: 0;" id="hbut">
+      <img src="/assets/images/games/gameb1/btn.png" id="imgmain"/>
+      <p style="font-size:30px;color:white;margin:0px;">&nbsp&nbsp&nbspSelect 8 playing cards from the following and then click on the panda to confirm.</p>
+    </div>
+  </div>
+  <div style="width: 100%; height: 50%" id="lb">
+    <div style="width: 100%;" class="lbs" id="lb1">
+    </div>
+    <div style="width: 100%;" class="lbs" id="lb2">
+    </div>
+  </div>
+</div>
+<script>
+    var selectN = 0;
+    function chan(){
+    if (document.documentElement.clientHeight / 3 > document.documentElement.clientWidth / 4){
+      $("#container").css("width", "100vw");
+      $("#container").css("height", (3/4*100) + "vw");
+      $(".spantag").css("font-size", "0.8vw");
+      //$(".card").css("width", "11vw").css("height", "");
+      $(".cardimg").css("width", "9vw").css("height", "");
+      $("#lb").css("margin-top", "3.57vw");
+      $("#lb1").css("margin-bottom", "0.57vw");
+      $("#imgmain").css("width", "62.6vw").css("height", "");
+      $('#tune').css('margin-top', '-1.5vw');
+    } else {
+      $("#container").css("width", (4/3*100)+"vh");
+      $("#container").css("height","100vh");
+      $(".spantag").css("font-size", "2vh");
+      //$(".card").css("width", "").css("height", "18.3vh");
+      $(".cardimg").css("width", "").css("height", "18.3vh");
+      $("#lb").css("margin-top", "4.76vh");
+      $("#lb1").css("margin-bottom", "0.76vh");
+      $("#imgmain").css("height", "21vh").css("width", "");
+      $('.tune').css('margin-top','-2vh');
+    }
+  }
+  var resizeObserver = new ResizeObserver(chan);
+  resizeObserver.observe(document.body);
+  chan();
+  var wholelist = {{ listAll | safe }};
+  var selectlist = {{ listSel | safe }};
+  var maximSel = Math.ceil(wholelist.length/2);
+  var selected = [];
+  for (var i of selectlist){
+    var url = "/assets/images/games/gameb1/" + (wholelist.indexOf(i) + 1) + ".jpg";
+    var div = $("<div class='card'>").attr("id", "selection_"+(wholelist.indexOf(i) + 1)).attr("opt", wholelist.indexOf(i)).attr("selected", false).append($("<div class='spantag'>").append($("<img class='cardimg'>").attr("src", url), $("<div class='tune'>").text(i))).click(function (){
+      console.log(this);
+      if ($(this).attr("selected")){
+        $(this).removeClass("activ");
+        $(this).attr("selected", false);
+        selectN--;
+      } else {
+        if (selectN < 8){
+          $(this).addClass("activ");
+          $(this).attr("selected", true);
+          selectN++;
+        }
+      }
+    });
+    var append_to = maximSel > 0 ? 1 : 2;
+    $("#lb"+append_to).append(div);
+    console.log(append_to);
+    maximSel--;
+  }
+  chan();
+  function submit(){
+    if ($("div.card[selected]").length == 8){
+      var dts = [];
+      for (var obj of $("div.card[selected]")){
+        dts.push(Number($(obj).attr("opt")));
+      }
+      $.ajax({
+        "url": "/apis/GameB1/checkAnswer",
+        "method": "POST",
+        "data": {
+          "ans": JSON.stringify(dts)
+        }
+      }).then((data) => {
+        if (data.Error == 0){
+          window.location = "/Game1?cg=1";
+        } else {
+          for (var o of Array.from($('div.card[selected]'))){
+            $(o).removeClass("activ").attr("selected", false);
+            selectN--;
+          }
+          remove(data.Tips)
+          console.log(data);
+        }
+      });
+    }
+  }
+  var remove = (data) => {
+    var numData = Number(data);
+    selectlist.splice(selectlist.indexOf(wholelist.indexOf(numData)));
+    var elem = $("div.card[opt="+data+"]");
+    if (elem.attr("selected")){
+      selectN--;
+    }
+    if (elem.parent().attr("id") == 'lb1'){
+      var tbd = $("#lb2").children().first();
+      if (tbd.length > 0){
+        tbd.detach();
+        $("#lb1").append(tbd);
+      }
+    }
+    elem.remove();
+  }
+  $("#hbut").click(function(){
+    if (selectN == 8){
+      submit();
+    }
+  });
+</script>
+{% endblock %}

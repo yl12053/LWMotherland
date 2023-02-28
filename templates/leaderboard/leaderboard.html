@@ -19,29 +19,42 @@
     return obj;
   }
 </script>
+<script>
+  function n(){
+    $.ajax({
+      "url": "/lbs"
+    }).then((data) => {
+      setTimeout(window.updatedc, 0, data);
+    });
+  }
+  window.n = n;
+</script>
 <script type="text/python">
   from browser import window, aio
   import random
   import javascript
   dc = []
-  async def gdc():
+  def update_dc(lst):
     global dc
-    while True:
-      arrs = [{"id": 1, "name": "group", "score": random.randint(0, random.randint(0, 500))}, {"id": 2, "name": "group2", "score": random.randint(0, 500)}, {"id": 3, "name": "group3", "score": random.randint(0, 500)}, {"id": 4, "name": "group4", "score": random.randint(0, 500)}, {"id": 5, "name": "group5", "score": random.randint(0, 500)}, {"id": 6, "name": "group6", "score": random.randint(0, 500)}, {"id": 7, "name": "group7", "score": random.randint(0, 500)}, {"id": 8, "name": "group8", "score": random.randint(0, 500)}]
-      #arrs.sort(key=lambda x: x["score"], reverse=True)
-      dc = arrs.copy()
-      await aio.sleep(3)
-      print("loop")
+    arrs = []
+    for x in range(0, len(lst)):
+      arrs.append({"id": x+1, "name": lst[x][0], "score": lst[x][1]})
+    dc = arrs.copy()
+    window.setTimeout(window.n, 1000)
+  window.updatedc = update_dc
+  print("UPDATEDC")
+  window.setTimeout(window.n, 0)
   def update_leaderboard():
     global dc
     rdict = {"success": True}
     rdict["leaders"] = dc.copy()
-    rdict["leaders"].sort(key=lambda x: x["score"], reverse=True)
-    rdict["maxScore"] = 500
+    #rdict["leaders"].sort(key=lambda x: x["score"], reverse=True)
+    rdict["maxScore"] = 200
+    
     return window.parse(rdict)
   window.datUpload = update_leaderboard
   window.jQuery("#app").show()
-  aio.run(gdc())
+  
 
 </script>
 {% endblock %}
