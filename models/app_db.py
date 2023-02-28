@@ -118,12 +118,14 @@ def classes(db, app):
       Question = db.Column(db.TEXT)
       Options = db.Column(sqlalchemy.JSON)
       Correct = db.Column(sqlalchemy.JSON)
+      Random = db.Column(db.Integer)
 
-      def __init__(self, id, Question, Options, Correct):
+      def __init__(self, id, Question, Options, Correct, Random=0):
         self.id = id
         self.Question = Question
         self.Options = Options
         self.Correct = Correct
+        self.Random = Random
 
     class Game2Details(db.Model):
       __tablename__ = "Game2Details"

@@ -114,8 +114,6 @@
         answer_storage[sol] = Number(choice);
         var reverseSearch = JSON.parse(window.localStorage.getItem("P^=p+PKZ*D9U}=i#"));
         reverseSearch = [...Array(reverseSearch.length).keys()].map((v) => reverseSearch.indexOf(v));
-        console.log(reverseSearch);
-        console.log(ql[0]+"_"+ql[1]+"->"+(reverseSearch[Number(ql[0])-1]+1)+"_"+ql[1])
         answer_handin[reverseSearch[Number(ql[0])-1]][Number(ql[1])-1] = Number(choice);
       }
     });
@@ -142,7 +140,6 @@
         count++;
       }
       var handin_str = JSON.stringify(answer_handin);
-      console.log(answer_handin);
       var res = CryptoJs.AES.encrypt(handin_str, CryptoJs.enc.Hex.parse(key), { iv: ivdFinal });
       var base = CryptoJs.enc.Base64.stringify(res.ciphertext);
       $.ajax({
