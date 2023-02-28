@@ -1,0 +1,183 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Motherland Map{% endblock %}
+
+{% block style %}
+<style>
+  body {
+    margin: 0px;
+    padding: 0px;
+    background-color:#000000;
+     border-radius: 25px;
+  }
+</style>
+{% endblock %}
+
+{% block script %}
+{% endblock %}
+
+{% block content %}
+<script>
+  var width = {{ width }};
+  var height = {{ height }};
+  window.clickable = false;
+</script>
+<script src="/assets/js/map.js"></script>
+<script>
+  var btnbtr = [];
+  window.locked = true;
+  var stack = [];
+  function download_sprite_as_png(renderer, sprite, fileName) {
+  	renderer.extract.canvas(sprite).toBlob(function(b){
+  		var a = document.createElement('a');
+  		document.body.append(a);
+  		a.download = fileName;
+  		a.href = URL.createObjectURL(b);
+  		a.click();
+  		a.remove();
+  	}, 'image/png');
+  }
+  var app = new PIXI.Application({"width": width, "height": height});
+  function chan(){
+    if (document.documentElement.clientHeight / height > document.documentElement.clientWidth / width){
+      app.view.style.width = "100vw";
+      app.view.style.height = (height/width*100) + "vw";
+    } else {
+      app.view.style.width = (width/height*100)+"vh";
+      app.view.style.height = "100vh";
+    }
+  }
+  var resizeObserver = new ResizeObserver(chan);
+  resizeObserver.observe(document.body);
+  chan();
+  app.view.style.position = "absolute";
+  app.view.style.top = "50%";
+  app.view.style.left = "50%";
+  app.view.style.transform = "translate(-50%, -50%)";
+  function bhole(x, y, c0, callback){
+    setTimeout(c0, 0);
+    var bsprite = new PIXI.Sprite(PIXI.Texture.WHITE);
+    bsprite.tint = 0;
+    bsprite.width = width;
+    bsprite.height = height;
+    bsprite.x = 0;
+    bsprite.y = 0;
+    window.bsprite = bsprite;
+    radius = Math.min(width - x, x, height - y, y);
+    var mGrap = new PIXI.Graphics();
+    mGrap.beginFill(0xffffff);
+    mGrap.drawRect(0, 0, width, height);
+    mGrap.endFill();
+    mGrap.beginFill(0);
+    mGrap.drawCircle(x,y,radius);
+    mGrap.endFill();
+    var cTexture = app.renderer.generateTexture(mGrap);
+    cSprite = new PIXI.Sprite(cTexture);
+    bsprite.mask = cSprite;
+    app.stage.addChild(bsprite);
+    function rbHole(bsprite, x1, y1, curRadius, perStep, callback){
+      if (curRadius - perStep > 0){
+        curRadius = curRadius - perStep;
+        stack.push(() => {
+        var mGrap = new PIXI.Graphics();
+        mGrap.beginFill(0xffffff);
+        mGrap.drawRect(0, 0, width, height);
+        mGrap.endFill();
+        mGrap.beginFill(0);
+        mGrap.drawCircle(x1,y1,curRadius);
+        mGrap.endFill();
+        var cTexture = app.renderer.generateTexture(mGrap);
+        var cSprite = new PIXI.Sprite(cTexture);
+        bsprite.mask = cSprite;
+        });
+        setTimeout(rbHole, 1, bsprite, x1, y1, curRadius, perStep, callback);
+      } else {
+        curRadius = 0;
+        stack.push(() => {
+        var mGrap = new PIXI.Graphics();
+        mGrap.beginFill(0xffffff);
+        mGrap.drawRect(0, 0, width, height);
+        mGrap.endFill();
+        var cTexture = app.renderer.generateTexture(mGrap);
+        var cSprite = new PIXI.Sprite(cTexture);
+        bsprite.mask = cSprite;
+        });
+        function gTemp(){
+          if (window.locked == false){
+            setTimeout(callback, 0);
+          } else{
+            setTimeout(gTemp, 0);
+          }
+        }
+        stack.push(gTemp);
+      }
+    }
+    setTimeout(rbHole, 1, bsprite, x, y, radius, 15, callback);
+  }
+  var vtext = PIXI.Texture.from('{{ asset_file }}');
+  var vspr = new PIXI.Sprite( vtext );
+  var bappend = [];
+  var btnc = 0;
+  var btnLimit = {{ rerr }};
+  for (var b of btns){
+    btnc++;
+    let bs = new PIXI.Sprite();
+    console.log(bs);
+    bs.interactive = true;
+    if (btnc <= btnLimit){
+      bs.callback = (event) => {alert("locked")};
+      btnbtr.push(bs);
+    } else {
+      bs.callback = b[2];
+    }
+    bs.hitArea = new PIXI.Ellipse(31, 25, 31, 25);
+    bs.on('pointerdown', (event) => {if (window.clickable){return bs.callback(event)}});
+    bs.internal_x = b[0];
+    bs.x = b[0];
+    bs.y = b[1];
+    bs.internal_y = b[1];
+    if (b[3]){
+      bs.texture = PIXI.Texture.from(b[3]);
+    } else {
+      bs.texture = PIXI.Texture.WHITE;
+    }
+    bs.alpha = 0;
+    bs.zIndex = 1;
+    bs.width = 62;
+    bs.height = 50;
+    app.stage.addChild(bs);
+  }
+  app.stage.addChild(vspr);
+  vspr.zIndex = 0;
+  app.stage.sortChildren();
+  app.ticker.add((delta) => {
+    let a = stack.shift();
+    if (a){
+      a();
+    }
+  })
+  document.body.appendChild(app.view);
+  {% if type_asset == "video" %}
+  videoControler = vspr.texture.baseTexture.resource.source;
+  videoControler.muted = true;
+  // videoControler.control = true;
+  $(videoControler).attr('src', "{{ asset_file }}");
+  videoControler.onended = function (){
+    for (var b of btnbtr){
+      b.alpha = 1;
+    }
+    {% endif %}
+    window.clickable = true;
+  {% if type_asset == "video" %}
+  }
+  console.log(videoControler.src);
+  function p(){
+    var res=videoControler.play();
+    res.then(()=>{console.log("fulfill")}, ()=>{
+      setTimeout(p, 1);
+    });
+  }
+  p();
+  {% endif %}
+</script>
+{% endblock %}

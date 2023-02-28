@@ -1,0 +1,75 @@
+<html>
+  <head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.3.min.js"></script>
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    <title>Management</title>
+  </head>
+  <body>
+    Data (Click to mark as paper sented):<br>
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">Time</th>
+          <th scope="col">Person</th>
+        </tr>
+      </thead>
+      <tbody id='tbody'>
+        
+      </tbody>
+    </table>
+  </body>
+  <script>
+    var data = {{ data | safe }};
+    var names = {{ names | safe }};
+    for (var datas of data){
+      var tr = $("<tr>");
+      var td1 = $("<td>").text(new Date(datas[0]).toLocaleString());
+      var td2 = $("<td>").text(names[datas[1]]);
+      tr.prop("dt", datas);
+      tr.append(td1).append(td2);
+      tr.click(function(){
+          $(this).off("click");
+          $.ajax({"url": "/apis/teac", 
+                 "data": this.dt[1],
+                 "method": "POST"});
+          $(this).remove();
+      });
+      $("#tbody").append(tr);
+    }
+    var socket = io();
+    var joined = false;
+    socket.on("ableToJoin", (data) => {
+       console.log("join");
+       function g(){
+         if (!joined){
+            socket.emit("join", {})
+            setTimeout(g, 100);
+         }
+       }
+       setTimeout(g, 0);
+       socket.emit("join", {});
+    });
+    socket.on("joined", (data) => {
+      console.log("joined");
+      joined = true;
+    });
+    socket.on("sdone", (data) => {
+      console.log(data);
+      var tr = $("<tr>");
+      var td1 = $("<td>").text(new Date(data.time).toLocaleString());
+      var td2 = $("<td>").text(data.name);
+      tr.prop("dt", [data.time, data.id]);
+      tr.append(td1).append(td2);
+      tr.click(function(){
+          $(this).off("click");
+          $.ajax({"url": "/apis/teac", 
+                 "data": this.dt[1],
+                 "method": "POST"});
+          $(this).remove();
+      });
+      $("#tbody").append(tr);
+    });
+  </script>
+</html>

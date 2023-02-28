@@ -1,0 +1,16 @@
+@font-face {
+  font-family: "RetroGaming";
+  src: url(/assets/fonts/RetroGaming.ttf) format("truetype");
+}
+@font-face {
+  font-family: "Deutsch";
+  src: url(/assets/fonts/Deutsch.ttf) format("truetype");
+}
+@font-face {
+  font-family: "JetBrainsMono";
+  src: url(/assets/fonts/JetBrainsMono-Regular.ttf) format("truetype");
+}
+@font-face {
+  font-family: "ComicMono";
+  src: url(/assets/fonts/ComicMono.ttf) format("truetype");
+}

@@ -1,0 +1,245 @@
+ {% extends 'base/base.html' %}
+
+{% block title %}Game 2{% endblock %}
+
+{% block style %}
+<style>
+  body {
+    margin: 0px;
+    background-image: url(https://images.theconversation.com/files/223729/original/file-20180619-126566-1jxjod2.jpg?ixlib=rb-1.1.0&q=45&auto=format&w=1200&h=675.0&fit=crop);
+    background-size:100vw 110vh;
+    
+  }
+  video {
+    pointer-events: none;
+  }
+  video::-webkit-media-controls {
+    display: none;
+  }
+  #container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    overflow: hidden ;
+  }
+  .trans {
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0s, opacity 0.5s linear;
+  }
+  .transAct {
+    visibility: visible;
+    opacity: 1;
+  }
+  .noselect {
+    -webkit-touch-callout: none;
+      -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+            user-select: none;
+  }
+  .centralize {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .content_container {
+  background-color: rgba(41, 103, 154, 0.5);
+  border-radius: 5px;
+  color:white;
+  border-color: coral;
+  border:solid;
+  font:normal 1.1em RetroGaming;
+  font-size:15px;
+  margin: 20px auto 20px auto;
+  padding: 50px;
+  padding-bottom: 20px;
+  line-height: 30px;
+  width: 80%;
+  margin-bottom: 0px;
+}
+
+.blank {
+  background-color: lightblue;
+  border-radius: 5px;
+  display: inline-block;
+  height: 12px;
+  color:rgb(22, 7, 165);
+  min-width: 100px;
+  padding: 1px 5px 15px 5px;
+  position: relative;
+  text-align: center;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.choice_cloud {
+  /* background-color: yellow; */
+  display: flex;
+  flex-wrap: wrap;
+  left: -1px;
+  position: absolute;
+  top: 25px;
+  cursor: pointer;
+
+  /* http://www.theappguruz.com/tag-tools/web/CSSAnimations/ */
+  -webkit-backface-visibility: visible !important;
+  backface-visibility: visible !important;
+  -webkit-animation-name: flipInX;
+  animation-name: flipInX;
+  -webkit-animation-duration: 1s;
+  animation-duration: 1s;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+  }
+  @-webkit-keyframes flipInX {
+  0% {
+  -webkit-transform: perspective(400px) rotate3d(1, 0, 0, 90deg);
+  transform: perspective(400px) rotate3d(1, 0, 0, 90deg);
+  -webkit-transition-timing-function: ease-in;
+  transition-timing-function: ease-in;
+  opacity: 0;
+  }
+  40% {
+  -webkit-transform: perspective(400px) rotate3d(1, 0, 0, -20deg);
+  transform: perspective(400px) rotate3d(1, 0, 0, -20deg);
+  -webkit-transition-timing-function: ease-in;
+  transition-timing-function: ease-in;
+  }
+  60% {
+  -webkit-transform: perspective(400px) rotate3d(1, 0, 0, 10deg);
+  transform: perspective(400px) rotate3d(1, 0, 0, 10deg);
+  opacity: 1;
+  }
+  80% {
+  -webkit-transform: perspective(400px) rotate3d(1, 0, 0, -5deg);
+  transform: perspective(400px) rotate3d(1, 0, 0, -5deg);
+  }
+  100% {
+  -webkit-transform: perspective(400px);
+  transform: perspective(400px);
+  }
+  }
+  @keyframes flipInX {
+  0% {
+  -webkit-transform: perspective(400px) rotate3d(1, 0, 0, 90deg);
+  transform: perspective(400px) rotate3d(1, 0, 0, 90deg);
+  -webkit-transition-timing-function: ease-in;
+  transition-timing-function: ease-in;
+  opacity: 0;
+  }
+  40% {
+  -webkit-transform: perspective(400px) rotate3d(1, 0, 0, -20deg);
+  transform: perspective(400px) rotate3d(1, 0, 0, -20deg);
+  -webkit-transition-timing-function: ease-in;
+  transition-timing-function: ease-in;
+  }
+  60% {
+  -webkit-transform: perspective(400px) rotate3d(1, 0, 0, 10deg);
+  transform: perspective(400px) rotate3d(1, 0, 0, 10deg);
+  opacity: 1;
+  }
+  80% {
+  -webkit-transform: perspective(400px) rotate3d(1, 0, 0, -5deg);
+  transform: perspective(400px) rotate3d(1, 0, 0, -5deg);
+  }
+  100% {
+  -webkit-transform: perspective(400px);
+  transform: perspective(400px);
+  }
+}
+
+.choice {
+  background-color: #4A829B;
+  border-radius: 5px;
+  box-shadow: 1px 2px 3px rgba(0,0,0,.3);
+  color: white;
+  margin: 0 5px 0 0;
+  padding-left: 5px;
+  padding-right: 5px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.choice:hover {
+  background-color: #6099b3;
+  cursor: pointer;
+}
+p.a{
+  font-size:1px
+}
+  
+
+</style>
+{% endblock %}
+{% block script %}
+<script src='/dynamic/g2dynam.js?hx={{ hx }}'></script>
+<script src="/assets/js/question_fetcher.js"></script>
+{% endblock %}
+
+{% block content %}
+<video autoplay muted loop style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); height: 100vh; width: 100vw; z-index: 0; object-fit: cover;">
+  <source src="/assets/video/Games/game2/bg2.mp4" />
+</video>
+<div id="container" class="noselect">
+  
+  <div id="mainzone" style="height: calc(100% - 60px); width: 80%; display: none; border: 30px ridge rgba(128,121,126,1); border-radius: 0px; margin: auto; overflow-y: auto">
+    <div style="background-color: rgba(21, 14, 87, 0.7); border-radius: 5px; color: white; margin: 40px auto 20px auto; padding: 50px;padding-bottom:20px; width: 80%;color:aquamarine;font:normal 1.1em RetroGaming;border-color: coral;border:solid">
+  <strong style="font-size:20px">Game 2: The Three forges in Changjiang</strong>
+  <p style="font-size:15px" >Click the blanks to view pop-up word choices.</p>
+</div>
+<div class="content_container">
+  <div id="wrapper">
+  </div>
+<button id="demo"  style="background-color:mediumaquamarine;cursor: pointer;color:blue">confirm</button>
+<input type=button style="background-color:mediumaquamarine;cursor: pointer;color:blue"onClick="parent.location='/map'"
+ value='return to map'></input>
+</div>
+</div>
+
+<script>
+  window.pDone = false;
+  $("#mainzone").hide();
+  function chan(){
+    if (document.documentElement.clientHeight / 3 > document.documentElement.clientWidth / 4){
+      $("#container").css("width", "100vw");
+      $("#container").css("height", (3/4*100) + "vw");
+    } else {
+      $("#container").css("width", (4/3*100)+"vh");
+      $("#container").css("height","100vh");
+    }
+    Array.from($(".choice_cloud")).forEach((elem) => {$(elem).css("width", ($(".content_container")[0].getBoundingClientRect().width + $(".content_container")[0].getBoundingClientRect().x - elem.getBoundingClientRect().x) + "px");});
+  }
+  var resizeObserver = new ResizeObserver(chan);
+  resizeObserver.observe(document.body);
+  chan();
+  if ({{ cg }}){
+      var v = $("<video class='centralize' muted>").append(
+        $("<source>").prop("src", "/assets/video/Games/game2/game2cg.mp4")
+      ).attr("id", "sv");
+      if (document.documentElement.clientHeight / 9 <= document.documentElement.clientWidth / 16){
+        v.css("width", "65vw");
+      } else {
+        v.css("height", "90vh");
+      }
+      $("#container").append(v);
+      v[0].play();
+  }
+  {% if cg=="true" %}
+  v[0].addEventListener('ended', function (event){
+    v.remove();
+  {% endif %}
+    window.pDone = true;
+    $("#mainzone").show();
+  {% if cg=="true" %}
+  }, false);
+  {% endif %}
+  // Load jquery
+// https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js
+
+// Original code moved to Game2.js
+</script>
+{% endblock %}

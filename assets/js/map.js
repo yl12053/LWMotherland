@@ -1,6 +1,62 @@
 var btns = [
-  [813, 903, function(event){alert('Yangtze');}],
-  [1037, 949, function(event){alert('Xi\'an');}],
-  [1327, 1335, function(event){alert('hk');}],
-  [1317, 615, function(event){alert('Forbidden City');}]
+  [1002, 911, function(event){window.clickable=false;bhole(1033, 936, function(){$.ajax(
+    {
+      "url": "/changeLoc",
+      "method": "POST",
+      "data": {
+        "dim": 1,
+        "x": -1,
+        "y": -1,
+        "reserved": 0
+      },
+      "success": function(data){
+        if (data == "Success"){
+          window.locked = false;
+        } else{
+          alert("Error occurred");
+          location.reload();
+        }
+      }
+    }
+  )}, function(){window.location="/Game1?cg=1";});},"/assets/images/map/button1.jpg"],
+  [796, 867, function(event){window.clickable=false;bhole(827, 894, function(){$.ajax(
+    {
+      "url": "/changeLoc",
+      "method": "POST",
+      "data": {
+        "dim": 2,
+        "x": -1,
+        "y": -1,
+        "reserved": 0
+      },
+      "success": function(data){
+        if (data == "Success"){
+          window.locked = false;
+        } else {
+          alert("Error occurred");
+          location.reload();
+        }
+      }
+    }
+  )}, function(){window.location="/Game2?cg=1";});},"/assets/images/map/button2.jpg"],
+  [1283, 578, function(event){window.clickable=false;bhole(1314, 603, function(){$.ajax(
+    {
+      "url": "/changeLoc",
+      "method": "POST",
+      "data": {
+        "dim": 3,
+        "x": -1,
+        "y": -1,
+        "reserved": 0
+      },
+      "success": function(data){
+        if (data == "Success"){
+          window.locked = false;
+        } else {
+          alert("Error occurred");
+          location.reload();
+        }
+      }
+    }
+  )}, function(){window.location="/Game3?cg=1";});},"/assets/images/map/button3.jpg"]
 ];
