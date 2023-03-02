@@ -1,4 +1,5 @@
 ((px, py, hx) => {
+  var actObj = {}
   function shuffle(array) {
     let currentIndex = array.length, randomIndex;
     while (currentIndex != 0) {
@@ -34,7 +35,7 @@
       var shared_key = new BN(shared.x).toString(16).padStart(64, '0');
       var shared_iv = new BN(shared.y).toString(16).padStart(64, '0').slice(0, 32);
       var dFR = 10;
-      var perQuestion = 1;
+      var perQuestion = 10;
       var timeMult = 1;
       function pQuestion(der, cdobj){
         var corrCount = {{ ccount }};
