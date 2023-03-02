@@ -26,6 +26,9 @@
           window.scrollTo(0, 1);
       }, 0);
     });
+    function ActiveQ(){
+      return document.hasFocus() && (!document.hidden);
+    }
     function convert_word_array_to_uint8Array(wordArray) {
       var len = wordArray.words.length,
           u8_array = new Uint8Array(len << 2),

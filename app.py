@@ -70,7 +70,7 @@ def assets(path):
   rtv = flask.send_from_directory(
     "assets",
     path,
-    conditional=True,
+    conditional=False,
     as_attachment=False,
     download_name=None,
   )
@@ -129,7 +129,7 @@ for x in apps:
 @app.route("/lbs")
 def p():
   tabd = Model.self_db.engine.execute(
-    "select concat(grps, ' (', mid(date_format(addtime('0', avg(game1tl)), '%%T.%%f'), 4, 8), ')'), avg(total) as 'avgTotal' from (select Auth.grp as 'grps', Auth.subindex as 'sid', sum(ifnull(Game1Details.timeLeftGame1, 0)) as 'game1tl', sum(if(Game1Bypass.passed = 0 or Game1Bypass.passed is null, 0, 130 - if(Game1Bypass.tipsGiven is NULL, 0, JSON_LENGTH(Game1Bypass.tipsGiven)*10)) + ifnull(Game1Details.mark1, 0) + ifnull(Game2Details.marks, 0)) as 'total' from Game1BQ, (((Auth left join Game1Details on Auth.id=Game1Details.id) left join Game2Details on Auth.id=Game2Details.id) left join Game1Bypass on Auth.id=Game1Bypass.id) group by Auth.grp, Auth.subindex) as firstResult group by grps order by avgTotal desc, avg(game1tl) desc, grps asc;"
+    "select concat(grps, ' (', mid(sec_to_time(avg(game1tl)), 4, 8), ')'), avg(total) as 'avgTotal' from (select Auth.grp as 'grps', Auth.subindex as 'sid', sum(ifnull(Game1Details.timeLeftGame1, 0)) as 'game1tl', sum(if(Game1Bypass.passed = 0 or Game1Bypass.passed is null, 0, 130 - if(Game1Bypass.tipsGiven is NULL, 0, JSON_LENGTH(Game1Bypass.tipsGiven)*10)) + ifnull(Game1Details.correctCountGame1 + Game1Details.timeBonus, 0) + ifnull(Game2Details.marks, 0)) as 'total' from Game1BQ, (((Auth left join Game1Details on Auth.id=Game1Details.id) left join Game2Details on Auth.id=Game2Details.id) left join Game1Bypass on Auth.id=Game1Bypass.id) group by Auth.grp, Auth.subindex) as firstResult group by grps order by avgTotal desc, avg(game1tl) desc, grps asc;"
   ).all()
   return flask.jsonify([[x[0], float(x[1])] for x in tabd])
 

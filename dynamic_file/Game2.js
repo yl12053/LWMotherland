@@ -61,8 +61,10 @@
     }
     
     dec_json.sort((d1, d2) => (fCac[d1[0]-1] - fCac[d2[0]-1]));
+    var noq = 0;
     for (var x of dec_json){
-      var html = `<br><br><br><br><br>${fCac[x[0]-1]+1}.  `;
+      noq++;
+      var html = `<br><br><br><br><br>${noq}.  `;
       var replace_obj = {};
       var answer_temp = [];
       for (var y = 1; y <= x[3].length; y++){

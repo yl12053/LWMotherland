@@ -44,10 +44,22 @@ def gheader():
     flask.abort(403)
   allowhex.remove(hx)
   p1, p2 = tuple(game1key[hx][0][1])
+  mod = Model.Game1Details.query.filter_by(id=current_user.id).first()
+  timeR = (mod.timeLeftGame1 if mod else 600)
+  s = 0
+  if mod:
+    s += (mod.correctCountGame1 if mod else 0)
+    s += (mod.wrongCountGame1 if mod else 0)
   rtemplate = Environment(loader=BaseLoader).from_string(
     open("dynamic_file/Game1%s.js" %
          ("" if current_app.config["T_DEBUG"] else "_Obfuscation")).read())
-  return rtemplate.render(hx=hx, px=hex(p1), py=hex(p2))
+  return rtemplate.render(hx=hx,
+                          px=hex(p1),
+                          py=hex(p2),
+                          cdv=str(timeR),
+                          fq=str(s),
+                          ccount=str(mod.correctCountGame1 if mod else 0),
+                          wcount=str(mod.wrongCountGame1 if mod else 0))
 
 
 @app.route("/apis/game1/ecdhe", methods=['POST'])
@@ -101,22 +113,14 @@ def updGame1():
     readable = json.loads(realdata.decode())
   except:
     flask.abort(403)
-  cct = readable["corrCount"]
-  wrt = readable["wrongCount"]
+  #cct = readable["corrCount"]
+  #wrt = readable["wrongCount"]
   tleft = readable["timeLeft"]
-  clientCalculated = readable["mark"]
-  if (clientCalculated != cct + timeCompansation(tleft)):
-    return "Fake Data"
+  #clientCalculated = readable["mark"]
+  #if (clientCalculated != cct + timeCompansation(tleft)):
+  #  return "Fake Data"
   mod = Model.Game1Details.query.filter_by(id=current_user.id).first()
-  if mod is None:
-    mod = Model.Game1Details(current_user.id, cct, wrt, tleft,
-                             clientCalculated)
-    Model.self_db.session.add(mod)
-  else:
-    mod.correctCountGame1 = cct
-    mod.wrongCountGame1 = wrt
-    mod.timeLeftGame1 = tleft
-    mod.mark1 = clientCalculated
+  mod.timeBonus = timeCompansation(tleft)
   mdf = Model.player_position.query.filter_by(id=current_user.id).first()
   if (mdf.preventRedone < 1):
     mdf.preventRedone = 1
@@ -124,31 +128,88 @@ def updGame1():
   return "OK"
 
 
-@app.route("/apis/game1/fetch_q", methods=['POST'])
+@app.route("/apis/game1/middleHandler", methods=['POST'])
 @login_required
-def ques():
+def middle():
   hx = flask.request.form.get("hx")
   if hx not in game1key.keys() or (game1key[hx][2] - time.time() > 600):
     flask.abort(403)
   if game1key[hx][1] is None:
     flask.abort(403)
-  qs = Model.Game1Q.query.filter_by(Random=1).all()
-  notneed = Model.Game1Q.query.filter_by(Random=0).all()
-  shuffled_notneed = random.shuffle(notneed)
-  rtd = []
-  for x in qs:
-    rtd.append([
+  payload = flask.request.form.get("payload")
+  try:
+    p = base64.b64decode(payload.encode())
+    if (len(p) == 0) or len(p) % 16:
+      flask.abort(400)
+  except:
+    flask.abort(400)
+  cipher = AES.new(game1key[hx][1][0], AES.MODE_CBC, game1key[hx][1][1])
+  game1key[hx][1][1] = hashlib.sha256(game1key[hx][1][1]).digest()[:16]
+  decd = cipher.decrypt(p)
+  if len(decd) == 0:
+    flask.abort(403)
+  last_bit = decd[-1]
+  if (last_bit > 15 or len(list(set(decd[-last_bit:]))) > 1):
+    flask.abort(403)
+  realdata = decd[:-last_bit]
+  pard = json.loads(realdata)
+  mod = Model.Game1Details.query.filter_by(id=current_user.id).first()
+  ques = mod.selectedQ[pard['q']]
+  quedata = Model.Game1Q.query.filter_by(Id=ques).first()
+  an = quedata.Answer
+  if an == pard["sel"]:
+    mod.correctCountGame1 = mod.correctCountGame1 + 1
+  else:
+    mod.wrongCountGame1 = mod.wrongCountGame1 + 1
+  print(ques)
+  print(pard["sel"])
+  print(an)
+  mod.timeLeftGame1 = pard["t"]
+  Model.self_db.session.commit()
+  return "OK"
+
+
+@app.route("/apis/game1/fetch_q", methods=['POST'])
+@login_required
+def ques():
+  print("Start")
+  hx = flask.request.form.get("hx")
+  if hx not in game1key.keys() or (game1key[hx][2] - time.time() > 600):
+    flask.abort(403)
+  if game1key[hx][1] is None:
+    flask.abort(403)
+  mdt = Model.Game1Details.query.filter_by(id=current_user.id).first()
+  if mdt:
+    questions = Model.Game1Q.query.all()
+    rtd = [[
       x.Id, x.Question, x.Option1, x.Option2, x.Option3, x.Option4, x.Answer,
       x.Random
-    ])
-  n = 0
-  while len(rtd) < mc_number:
-    x = shuffled_notneed
-    rtd.append([
-      x.Id, x.Question, x.Option1, x.Option2, x.Option3, x.Option4, x.Answer,
-      x.Random
-    ])
-    n += 1
+    ] for x in questions if x.Id in mdt.selectedQ]
+    rtd.sort(key=lambda x: mdt.selectedQ.index(x[0]))
+  else:
+    qs = Model.Game1Q.query.filter_by(Random=0).all()
+    notneed = Model.Game1Q.query.filter_by(Random=1).all()
+    random.shuffle(notneed)
+    print([x.Id for x in qs])
+    print([x.Id for x in notneed])
+    rtd = []
+    for x in qs:
+      rtd.append([
+        x.Id, x.Question, x.Option1, x.Option2, x.Option3, x.Option4, x.Answer,
+        x.Random
+      ])
+    n = 0
+    while len(rtd) < mc_number:
+      x = notneed[n]
+      rtd.append([
+        x.Id, x.Question, x.Option1, x.Option2, x.Option3, x.Option4, x.Answer,
+        x.Random
+      ])
+      n += 1
+    itl = [x[0] for x in rtd]
+    mdt = Model.Game1Details(current_user.id, 0, 0, 600, 0, itl)
+    Model.self_db.session.add(mdt)
+    Model.self_db.session.commit()
   encStr = json.dumps(rtd)
   byteStr = encStr.encode("utf8")
   padStr = byteStr + (
@@ -189,24 +250,13 @@ def leader():
   game1key[hexs] = [[privkey, pubkey], None, time.time()]
   allowhex.append(hexs)
   hexmap[current_user.id] = hexs
-  if flask.request.args.get("cg"):
-    resp = make_response(
-      flask.render_template(
-        "game/Game1.html",
-        cg=("false" if flask.request.args.get("cg") == "0" else "true"),
-        hx=hexs))
-    return resp
-  else:
-    mdf = Model.player_position.query.filter_by(id=current_user.id).first()
-    if mdf is None:
-      mdf = Model.player_position(current_user.id, 1, -1, -1, 0)
-      Model.self_db.session.add(mdf)
-    if mdf.reserved == 0:
-      mdf.reserved = 1
-      f = "true"
-    else:
-      f = "false"
-    Model.self_db.session.commit()
-    resp = make_response(
-      flask.render_template("game/Game1.html", cg=f, hx=hexs))
-    return resp
+  mod = Model.Game1Details.query.filter_by(id=current_user.id).first()
+  pcg = flask.request.args.get("cg")
+  if pcg != "0":
+    if mod:
+      pcg = '0'
+  resp = make_response(
+    flask.render_template("game/Game1.html",
+                          cg=("false" if pcg == "0" else "true"),
+                          hx=hexs))
+  return resp

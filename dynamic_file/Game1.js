@@ -37,9 +37,9 @@
       var perQuestion = 1;
       var timeMult = 1;
       function pQuestion(der, cdobj){
-        var corrCount = 0;
-        var wrongCount = 0;
-        var globMark = 0;
+        var corrCount = {{ ccount }};
+        var wrongCount = {{ wcount }};
+        var globMark = {{ ccount }} * perQuestion;
         if ((!window.localStorage.getItem(".q(YPVKM5Re2ADI%C")) || JSON.parse(window.localStorage.getItem(".q(YPVKM5Re2ADI%C")).length != der.length){
           var rlist = [...Array(der.length).keys()];
           rlist = shuffle(rlist);
@@ -62,10 +62,10 @@
         var obj = {};
         var arrv = [];
         for (var tempI = 1; tempI <= 4; tempI++){
-          obj["incorrect"+tempI] = $("<video muted>").css("width", "80%").append($("<source>").attr("src", "/assets/video/Games/game1/"+tempI+"_incorrect.mp4")).hide();
+          obj["incorrect"+tempI] = $("<video muted>").css("width", "80%").append($("<source>").attr("src", "/assets/video/Games/game1/"+tempI+"_incorrect.mp4")).prop("defaultPlaybackRate", 2).hide();
           obj["incorrect"+tempI][0].load();
           arrv.push(obj["incorrect"+tempI][0]);
-          obj["correct"+tempI] = $("<video muted>").css("width", "80%").append($("<source>").attr("src", "/assets/video/Games/game1/"+tempI+"_correct.mp4")).hide();
+          obj["correct"+tempI] = $("<video muted>").css("width", "80%").append($("<source>").attr("src", "/assets/video/Games/game1/"+tempI+"_correct.mp4")).prop("defaultPlaybackRate", 2).hide();
           obj["correct"+tempI][0].load();
           arrv.push(obj["correct"+tempI][0]);
         }
@@ -138,9 +138,33 @@
           } else {
             var trueNum = rlist[qnum];
             var qobj = der[trueNum];
-            $("#question_container").text(qobj[1]);
+            $("#question_container").text(qnum+". "+qobj[1]);
             var currSel = [undefined];
             btns[qnum].map((btn, shuf) => {$("#inner"+btn).text(qobj[shuf+2]).parent().click(() => {if (cdobj.getRemains() > 0){selection(btn); currSel[0] = btn;}});});
+            function hand_med(tr, sel){
+              var selAns = btns[qnum].indexOf(sel)+1;
+              var obj = {
+                "q": tr,
+                "sel": selAns,
+                "t": Math.ceil(cdobj.getRemains()),
+              };
+              var ivdTemp = CryptoJs.enc.Hex.parse(shared_iv);
+              var ivdBuffer = CryptoJs.SHA256(ivdTemp);
+              shared_iv = CryptoJs.enc.Hex.stringify(ivdBuffer).slice(0, 32);
+              var ivdFinal = CryptoJs.enc.Hex.parse(shared_iv);
+              var keyFinal = CryptoJs.enc.Hex.parse(shared_key);
+              var stData = JSON.stringify(obj);
+              var encryptedData = CryptoJs.AES.encrypt(stData, keyFinal, {iv: ivdFinal});
+              var payload = CryptoJs.enc.Base64.stringify(encryptedData.ciphertext);
+              $.ajax({
+                "url": "/apis/game1/middleHandler",
+                "method": "POST",
+                "data": {
+                  "hx": hx,
+                  "payload": payload
+                }
+              });
+            }
             function correct_handler(selec){
               cdobj.pause();
               // cdobj.addSeconds(15);
@@ -149,6 +173,7 @@
               atta(selec, "correct");
               globMark += perQuestion;
               corrCount++;
+              setTimeout(hand_med, 0, trueNum, selec);
             }
             function incorrect_handler(selec, c, a){
               cdobj.pause();
@@ -158,7 +183,9 @@
               $("#btn"+a).addClass("correct").removeClass("wrong_nonexplict");
               atta(selec, "incorrect");
               wrongCount++;
+              setTimeout(hand_med, 0, trueNum, selec);
             }
+            
             $("#btnconfirm").text("Confirm!").click(() => {
               if (currSel[0]){
                 if (cdobj.getRemains() > 0){
@@ -175,7 +202,7 @@
             });
           }
         }
-        questionSet(0);
+        questionSet({{ fq }});
         function showQuestion(){
           if (window.pDone){
             $("#mainzone").show();
@@ -198,7 +225,8 @@
             try {
               var der = JSON.parse(CryptoJs.enc.Utf8.stringify(dec));
               var cdobj = createCountdown(100, 100, 100, 10, 10);
-              cdobj.setCountdownSec(600);
+              var ctdv = {{ cdv }};
+              cdobj.setCountdownSec(ctdv);
               cdobj.app.view.style.height = "100%";
               cdobj.app.view.style.width = "100%";
               $("#countdown_container")[0].appendChild(cdobj.app.view);

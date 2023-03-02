@@ -82,14 +82,16 @@ def classes(db, app):
       correctCountGame1 = db.Column(db.Integer)
       wrongCountGame1 = db.Column(db.Integer)
       timeLeftGame1 = db.Column(db.Integer)
-      mark1 = db.Column(db.Integer)
+      timeBonus = db.Column(db.Integer)
+      selectedQ = db.Column(sqlalchemy.JSON)
 
-      def __init__(self, id, corr, wrong, timel, mark):
+      def __init__(self, id, corr, wrong, timel, tb, sq):
         self.id = id
         self.correctCountGame1 = corr
         self.wrongCountGame1 = wrong
         self.timeLeftGame1 = timel
-        self.mark1 = mark
+        self.timeBonus = tb
+        self.selectedQ = sq
 
     class Game1Q(db.Model):
       __tablename__ = "Game1Q"
