@@ -13,6 +13,7 @@ from Crypto.Cipher import AES
 from jinja2 import Environment, BaseLoader
 from flask import current_app
 import binascii
+import random
 
 initialized = False
 
@@ -54,12 +55,12 @@ def fet():
   question_data = Model.Game2Q.query.filter_by(Random=1).all()
   retD = []
   nqd = Model.Game2Q.query.filter_by(Random=0).all()
-  shfdd = random.shuffle(nqd)
+  random.shuffle(nqd)
   for x in question_data:
     retD.append([x.id, x.Question, x.Options, x.Correct])
   np = 0
   while len(retD) < max_question:
-    x = shfdd[np]
+    x = nqd[np]
     retD.append([x.id, x.Question, x.Options, x.Correct])
     np += 1
   retst = json.dumps(retD)
