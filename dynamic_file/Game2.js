@@ -1,5 +1,35 @@
 ((px, py, hx) => {
-
+  var AC = {
+    'flag': false,
+    'audio_file': new Audio(assets_url + "/audio/AC/siren.mp3"),
+    'start_func': function(){
+      this.flag = true;
+      var temp = this;
+      function g(){
+        function p(){
+          var audio = temp.audio_file;
+          audio.play();
+          audio.onended = function(){
+            audio.currentTime = 0;
+            setTimeout(p, 0);
+          };
+        }
+        if (!ActiveQ()){
+          if (temp.flag){
+            setTimeout(p, 0);
+            setInterval(() => {alert("AC");})
+          }
+        }
+        if (temp.flag){
+          setTimeout(g, 0);
+        }
+      }
+      setTimeout(g, 0);
+    },
+    'end_func': function(){
+      this.flag = false;
+    }
+  }
 
   //{% raw %}
   function escape(text){
@@ -59,8 +89,14 @@
     } else {
       fCac = JSON.parse(mapA2C);
     }
-    
-    dec_json.sort((d1, d2) => (fCac[d1[0]-1] - fCac[d2[0]-1]));
+    console.log(dec_json);
+    // dec_json.sort((d1, d2) => fCac[d1[0]-1] - fCac[d2[0]-1]);
+    dec_new_json = [];
+    for (var n of fCac){
+      dec_new_json.push(dec_json[n]);
+    }
+    dec_json = dec_new_json;
+    console.log(dec_json);
     var noq = 0;
     for (var x of dec_json){
       noq++;
@@ -69,11 +105,11 @@
       var answer_temp = [];
       for (var y = 1; y <= x[3].length; y++){
         var replace_regex = "{{ +replace_" + y + " *\\| *safe *}}";
-        var replace_content = `<span class='blank'><span class='text_container' id='q${fCac[x[0]-1]+1}_${y}'>&nbsp;</span><span style='display: none' class='choice_cloud'>`;
-        answer_storage[`${fCac[x[0]-1]+1}_${y}`] = -1;
+        var replace_content = `<span class='blank'><span class='text_container' id='q${noq}_${y}'>&nbsp;</span><span style='display: none' class='choice_cloud'>`;
+        answer_storage[`${noq}_${y}`] = -1;
         answer_temp[y-1] = -1;
         for (var i = 0; i < x[2][y-1].length; i++){
-          replace_content = replace_content + `<span attrs='${fCac[x[0]-1]+1}_${y}_${i}' class='choice'>${escape(x[2][y-1][i])}</span>`;
+          replace_content = replace_content + `<span attrs='${noq}_${y}_${i}' class='choice'>${escape(x[2][y-1][i])}</span>`;
         }
         replace_content = replace_content + "</span></span>";
         replace_obj[replace_regex] = replace_content;
@@ -86,6 +122,7 @@
       html += toBe + "<br><br><br><br><hr></hr>";
       totht += html;
     }
+    console.log(answer_handin);
     $("#wrapper")[0].innerHTML = totht;
     var all_choices = $(".blank")
       .parent()
@@ -98,7 +135,6 @@
       choiceCloud.toggle();
       Array.from($(".choice_cloud")).forEach((elem) => {$(elem).css("width", ($(".content_container")[0].getBoundingClientRect().width + $(".content_container")[0].getBoundingClientRect().x - elem.getBoundingClientRect().x) + "px");});
     });
-    
     $(".choice").click(function(event) {
       var myChoice = $(event.target);
       var isChoice = myChoice.is(".choice");
@@ -110,13 +146,18 @@
           .text(myChoice.text());
         myChoice.parent().hide();
         var attrs = myChoice.attr("attrs");
+        console.log(attrs);
         var sol = splitOnlast(attrs, "_")[0];
         var ql = sol.split("_");
         var choice = splitOnlast(attrs, "_")[1];
         answer_storage[sol] = Number(choice);
         var reverseSearch = JSON.parse(window.localStorage.getItem("P^=p+PKZ*D9U}=i#"));
-        reverseSearch = [...Array(reverseSearch.length).keys()].map((v) => reverseSearch.indexOf(v));
-        answer_handin[reverseSearch[Number(ql[0])-1]][Number(ql[1])-1] = Number(choice);
+        console.log(reverseSearch);
+        // reverseSearch = [...Array(reverseSearch.length).keys()].map((v) => reverseSearch.indexOf(v));
+        // console.log(reverseSearch);
+        console.log(ql);
+        console.log(answer_handin);
+        answer_handin[dec_json[Number(ql[0])-1][0]-1][Number(ql[1])-1] = Number(choice);
       }
     });
     
@@ -142,6 +183,7 @@
         count++;
       }
       var handin_str = JSON.stringify(answer_handin);
+      console.log(handin_str);
       var res = CryptoJs.AES.encrypt(handin_str, CryptoJs.enc.Hex.parse(key), { iv: ivdFinal });
       var base = CryptoJs.enc.Base64.stringify(res.ciphertext);
       $.ajax({
@@ -151,11 +193,11 @@
           "hx": hx,
           "raw": base
         },
-        "success": function(data){
-          
-        }
-      });
+      }).then((res) => {
+        AC.end_func();
+      }, (res) => {AC.end_func();});
     });
+    AC.start_func();
   });
   //{% endraw %}
 })(BigInt("{{ px }}"), BigInt("{{ py }}"), "{{ hx }}");

@@ -46,6 +46,15 @@ def on_identity_loaded(sender, identity):
         identity.provides.add(RoleNeed(role))
 
 
+@app.context_processor
+def cache_busters():
+  return {
+    'assets':
+    'https://raw.githubusercontent.com/yl12053/LWMotherland/Dev/assets',
+    "local_assets": "/assets"
+  }
+
+
 @app.after_request
 def add_header(r):
   if hasattr(r, 'ext_cac'):
@@ -72,7 +81,7 @@ def assets(path):
   rtv = flask.send_from_directory(
     "assets",
     path,
-    conditional=True,
+    conditional=False,
     as_attachment=False,
     download_name=None,
   )

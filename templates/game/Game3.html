@@ -52,7 +52,7 @@
 </style>
 {% endblock %}
 {% block script %}
-<script src="/assets/js/question_fetcher.js"></script>
+<script src="{{ local_assets }}/js/question_fetcher.js"></script>
 {% endblock %}
 
 {% block content %}
@@ -90,7 +90,7 @@
   chan();
   if ({{ cg }}){
       var v = $("<video class='centralize' muted>").append(
-        $("<source>").prop("src", "/assets/video/Games/game3/final.mp4")
+        $("<source>").prop("src", "{{ assets }}/video/Games/game3/final.mp4")
       ).attr("id", "sv");
       if (document.documentElement.clientHeight / 9 <= document.documentElement.clientWidth / 16){
         v.css("width", "65vw");

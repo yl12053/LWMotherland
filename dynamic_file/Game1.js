@@ -63,10 +63,10 @@
         var obj = {};
         var arrv = [];
         for (var tempI = 1; tempI <= 4; tempI++){
-          obj["incorrect"+tempI] = $("<video muted>").css("width", "80%").append($("<source>").attr("src", "/assets/video/Games/game1/"+tempI+"_incorrect.mp4")).prop("defaultPlaybackRate", 2).hide();
+          obj["incorrect"+tempI] = $("<video muted>").css("width", "80%").append($("<source>").attr("src", assets_url +　"/video/Games/game1/"+tempI+"_incorrect.mp4")).prop("defaultPlaybackRate", 2).hide();
           obj["incorrect"+tempI][0].load();
           arrv.push(obj["incorrect"+tempI][0]);
-          obj["correct"+tempI] = $("<video muted>").css("width", "80%").append($("<source>").attr("src", "/assets/video/Games/game1/"+tempI+"_correct.mp4")).prop("defaultPlaybackRate", 2).hide();
+          obj["correct"+tempI] = $("<video muted>").css("width", "80%").append($("<source>").attr("src", assets_url +　"/video/Games/game1/"+tempI+"_correct.mp4")).prop("defaultPlaybackRate", 2).hide();
           obj["correct"+tempI][0].load();
           arrv.push(obj["correct"+tempI][0]);
         }

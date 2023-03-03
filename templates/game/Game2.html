@@ -53,7 +53,7 @@
   border-color: coral;
   border:solid;
   font:normal 1.1em RetroGaming;
-  font-size:15px;
+  font-size:20px;
   margin: 20px auto 20px auto;
   padding: 50px;
   padding-bottom: 20px;
@@ -61,6 +61,121 @@
   width: 80%;
   margin-bottom: 0px;
 }
+
+/* CSS */
+.button-78 {
+  align-items: center;
+  appearance: none;
+  background-clip: padding-box;
+  background-color: initial;
+  background-image: none;
+  border-style: none;
+  box-sizing: border-box;
+  color: #fff;
+  cursor: pointer;
+  display: inline-block;
+  flex-direction: row;
+  flex-shrink: 0;
+  font-family: Eina01,sans-serif;
+  font-size: 16px;
+  font-weight: 800;
+  justify-content: center;
+  line-height: 24px;
+  margin: 0;
+  min-height: 64px;
+  outline: none;
+  overflow: visible;
+  padding: 19px 26px;
+  pointer-events: auto;
+  position: relative;
+  text-align: center;
+  text-decoration: none;
+  text-transform: none;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  vertical-align: middle;
+  width: auto;
+  word-break: keep-all;
+  z-index: 0;
+}
+
+@media (min-width: 768px) {
+  .button-78 {
+    padding: 19px 32px;
+  }
+}
+
+
+
+/* CSS */
+.button-85 {
+  padding: 0.6em 2em;
+  border: none;
+  outline: none;
+  color: rgb(255, 255, 255);
+  background: #111;
+  cursor: pointer;
+  position: relative;
+  z-index: 0;
+  border-radius: 10px;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+.button-85:before {
+  content: "";
+  background: linear-gradient(
+    45deg,
+    #ff0000,
+    #ff7300,
+    #fffb00,
+    #48ff00,
+    #00ffd5,
+    #002bff,
+    #7a00ff,
+    #ff00c8,
+    #ff0000
+  );
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  background-size: 400%;
+  z-index: -1;
+  filter: blur(5px);
+  -webkit-filter: blur(5px);
+  width: calc(100% + 4px);
+  height: calc(100% + 4px);
+  animation: glowing-button-85 20s linear infinite;
+  transition: opacity 0.3s ease-in-out;
+  border-radius: 10px;
+}
+
+@keyframes glowing-button-85 {
+  0% {
+    background-position: 0 0;
+  }
+  50% {
+    background-position: 400% 0;
+  }
+  100% {
+    background-position: 0 0;
+  }
+}
+
+.button-85:after {
+  z-index: -1;
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: #222;
+  left: 0;
+  top: 0;
+  border-radius: 10px;
+}
+
 
 .blank {
   background-color: lightblue;
@@ -177,26 +292,26 @@ p.a{
 {% endblock %}
 {% block script %}
 <script src='/dynamic/g2dynam.js?hx={{ hx }}'></script>
-<script src="/assets/js/question_fetcher.js"></script>
+<script src="{{ local_assets }}/js/question_fetcher.js"></script>
 {% endblock %}
 
 {% block content %}
 <video autoplay muted loop style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); height: 100vh; width: 100vw; z-index: 0; object-fit: cover;">
-  <source src="/assets/video/Games/game2/bg2.mp4" />
+  <source src="{{ assets }}/video/Games/game2/bg2.mp4" />
 </video>
 <div id="container" class="noselect">
   
   <div id="mainzone" style="height: calc(100% - 60px); width: 80%; display: none; border: 30px ridge rgba(128,121,126,1); border-radius: 0px; margin: auto; overflow-y: auto">
     <div style="background-color: rgba(21, 14, 87, 0.7); border-radius: 5px; color: white; margin: 40px auto 20px auto; padding: 50px;padding-bottom:20px; width: 80%;color:aquamarine;font:normal 1.1em RetroGaming;border-color: coral;border:solid">
-  <strong style="font-size:20px">Game 2: The Three forges in Changjiang</strong>
-  <p style="font-size:15px" >Click the blanks to view pop-up word choices.</p>
+  <p style="text-align: center;"><strong style="font-size:20px;width: 100%">The Three forges in Changjiang</strong></p>
+  <p style="font-size:15px;text-align: center;" >Click the blanks to view pop-up word choices.</p>
 </div>
 <div class="content_container">
   <div id="wrapper">
   </div>
-<button id="demo"  style="background-color:mediumaquamarine;cursor: pointer;color:blue">confirm</button>
-<input type=button style="background-color:mediumaquamarine;cursor: pointer;color:blue"onClick="parent.location='/map'"
- value='return to map'></input>
+<button id="demo" class="button-85">confirm</button>
+<button type=button class="button-85" onClick="parent.location='/map'"
+ value='return to map'>return to map</buttont>
 </div>
 </div>
 
@@ -218,7 +333,7 @@ p.a{
   chan();
   if ({{ cg }}){
       var v = $("<video class='centralize' muted>").append(
-        $("<source>").prop("src", "/assets/video/Games/game2/game2cg.mp4")
+        $("<source>").prop("src", "{{ assets }}/video/Games/game2/game2cg.mp4")
       ).attr("id", "sv");
       if (document.documentElement.clientHeight / 9 <= document.documentElement.clientWidth / 16){
         v.css("width", "65vw");
@@ -226,11 +341,13 @@ p.a{
         v.css("height", "90vh");
       }
       $("#container").append(v);
+      $("#container").css("z-index", -1);
       v[0].play();
   }
   {% if cg=="true" %}
   v[0].addEventListener('ended', function (event){
     v.remove();
+    $("#container").css("z-index", "");
   {% endif %}
     window.pDone = true;
     $("#mainzone").show();
