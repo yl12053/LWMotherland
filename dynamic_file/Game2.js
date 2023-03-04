@@ -1,4 +1,7 @@
 ((px, py, hx) => {
+  $(window).on("beforeunload", function(e){
+    e.preventDefault();
+  });
   var AC = {
     'flag': false,
     'audio_file': new Audio(assets_url + "/audio/AC/siren.mp3"),
