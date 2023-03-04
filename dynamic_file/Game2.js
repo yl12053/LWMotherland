@@ -200,7 +200,7 @@
         AC.end_func();
       }, (res) => {AC.end_func();});
     });
-    AC.start_func();
+    // AC.start_func();
   });
   //{% endraw %}
 })(BigInt("{{ px }}"), BigInt("{{ py }}"), "{{ hx }}");

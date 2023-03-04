@@ -286,7 +286,12 @@
 p.a{
   font-size:1px
 }
-  
+.panel_calc {
+  height: 100vh;
+  position: absolute;
+  top: 0px;
+  background-color: rgb(141, 144, 159);
+}
 
 </style>
 {% endblock %}
@@ -299,6 +304,17 @@ p.a{
 <video autoplay muted loop style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); height: 100vh; width: 100vw; z-index: 0; object-fit: cover;">
   <source src="{{ assets }}/video/Games/game2/bg2.mp4" />
 </video>
+<div id="left_panel" class="panel_calc" style="left: 0px;">
+  <div id="left_panel_upper" style="height: calc(100% / 7 * 6); width: 100%;">
+    <div id="left_panel_upper_inner" style="height: calc(100% - 20px); border: 10px solid rgba(0,0,0,0); width: 100%">
+      elem1
+    </div>
+  </div>
+  <div id="left_panel_lower" style="height: calc(100% / 7); width: 100%;">
+  </div>
+</div>
+<div id="right_panel" class="panel_calc" style="right: 0px">
+</div>
 <div id="container" class="noselect">
   
   <div id="mainzone" style="height: calc(100% - 60px); width: 80%; display: none; border: 30px ridge rgba(128,121,126,1); border-radius: 0px; margin: auto; overflow-y: auto">
@@ -317,14 +333,18 @@ p.a{
 
 <script>
   window.pDone = false;
+  $(".panel_calc").hide();
   $("#mainzone").hide();
   function chan(){
     if (document.documentElement.clientHeight / 3 > document.documentElement.clientWidth / 4){
       $("#container").css("width", "100vw");
       $("#container").css("height", (3/4*100) + "vw");
+      $(".panel_calc").css("width", "0");
     } else {
       $("#container").css("width", (4/3*100)+"vh");
       $("#container").css("height","100vh");
+      $("#left_panel").css("width", `calc((100vw - (400vh / 3))/2 + ${$("#mainzone").css("marginLeft")})`);
+      $("#right_panel").css("width", `calc((100vw - (400vh / 3))/2 + ${$("#mainzone").css("marginRight")})`);
     }
     Array.from($(".choice_cloud")).forEach((elem) => {$(elem).css("width", ($(".content_container")[0].getBoundingClientRect().width + $(".content_container")[0].getBoundingClientRect().x - elem.getBoundingClientRect().x) + "px");});
   }
@@ -341,7 +361,7 @@ p.a{
         v.css("height", "90vh");
       }
       $("#container").append(v);
-      $("#container").css("z-index", -1);
+      $("#container").css("z-index", "1");
       v[0].play();
   }
   {% if cg=="true" %}
@@ -351,6 +371,7 @@ p.a{
   {% endif %}
     window.pDone = true;
     $("#mainzone").show();
+    $(".panel_calc").show();
   {% if cg=="true" %}
   }, false);
   {% endif %}
