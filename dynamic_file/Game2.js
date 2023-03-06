@@ -112,7 +112,7 @@
     var noq = 0;
     for (var x of dec_json){
       noq++;
-      var html = `<br><br><br><br><br>${noq}.  `;
+      var html = `<br><br>${noq}.  `;
       var replace_obj = {};
       var answer_temp = [];
       for (var y = 1; y <= x[3].length; y++){
@@ -131,7 +131,7 @@
       for (var reg in replace_obj){
         toBe = toBe.replace(new RegExp(reg), replace_obj[reg]);
       }
-      html += toBe + "<br><br><br><br><hr></hr>";
+      html += toBe + "<br><hr></hr>";
       totht += html;
     }
     console.log(answer_handin);
@@ -209,7 +209,7 @@
         AC.end_func();
       }, (res) => {AC.end_func();});
     });
-    AC.start_func();
+    //AC.start_func();
   });
   //{% endraw %}
 })(BigInt("{{ px }}"), BigInt("{{ py }}"), "{{ hx }}");

@@ -100,7 +100,8 @@ if app.config["T_DEBUG"]:
 
   @app.route("/")
   def root():
-    return open("index.html", "r").read()
+    #return open("index.html", "r").read()
+    return homepage()
 
   @app.route("/lb")
   def leaderboard():
