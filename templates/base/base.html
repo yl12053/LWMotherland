@@ -30,8 +30,8 @@
       }, 0);
     });
     function ActiveQ(){
-      // return document.hasFocus() && (!document.hidden);
-      return !document.hidden;
+      return document.hasFocus() && (!document.hidden);
+      // return !document.hidden;
     }
     function convert_word_array_to_uint8Array(wordArray) {
       var len = wordArray.words.length,

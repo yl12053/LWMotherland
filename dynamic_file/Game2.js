@@ -1,11 +1,16 @@
 ((px, py, hx) => {
+  var ableExit = true;
   $(window).on("beforeunload", function(e){
-    e.preventDefault();
+    if (!ableExit){
+      e.preventDefault();
+      return false;
+    }
   });
   var AC = {
     'flag': false,
     'audio_file': new Audio(assets_url + "/audio/AC/siren.mp3"),
     'start_func': function(){
+      ableExit = false;
       this.flag = true;
       var temp = this;
       function g(){
@@ -30,10 +35,14 @@
       setTimeout(g, 0);
     },
     'end_func': function(){
+      ableExit = true;
       this.flag = false;
     }
   }
-
+  $("#btnright").click(function (){
+    AC.end_func();
+    window.location = "/map";
+  })
   //{% raw %}
   function escape(text){
     var elem = document.createElement('textarea');
@@ -168,7 +177,7 @@
     $(document).on("click", function() {
       $(".choice_cloud").hide("slow");
     });
-    $("#demo").click(() => {
+    $("#btnleft").click(() => {
       var count = 0;
       var correct = 0;
       all_choices.hide("slow");
@@ -200,7 +209,7 @@
         AC.end_func();
       }, (res) => {AC.end_func();});
     });
-    // AC.start_func();
+    AC.start_func();
   });
   //{% endraw %}
 })(BigInt("{{ px }}"), BigInt("{{ py }}"), "{{ hx }}");
