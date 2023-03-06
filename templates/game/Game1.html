@@ -61,10 +61,12 @@
   }
   .correct {
     filter: brightness(1.2);
+    color: green !important;
   }
   .wrong {
     filter: brightness(0.5) !important;
     transition: filter 0.25s;
+    color: red !important;
   }
   .wrong_nonexplict {
     filter: brightness(0.8);
@@ -92,7 +94,7 @@
 {% endblock %}
 {% block script %}
 <script src='/dynamic/g1dynam.js?hx={{ hx }}'></script>
-<script src="/assets/js/question_fetcher.js"></script>
+<script src="{{ local_assets }}/js/question_fetcher.js"></script>
 {% endblock %}
 
 {% block content %}
@@ -105,7 +107,7 @@
       <div id="countdown_container" style="height: 100%; width: 12vh; margin-left: 0px">
       </div>
     </div>
-    <div id="cg_container" style="height: 60%; width: 100%; background-image: url(/assets/images/questionbox.png);background-size: contain;background-position: center ;
+    <div id="cg_container" style="height: 60%; width: 100%; background-image: url({{ assets }}/images/questionbox.png);background-size: contain;background-position: center ;
 background-repeat: no-repeat;text-align: center; overflow: hidden">
     </div>
     <strong  id= "demo" onclick = "myFunction()"style= "text-align:center; color : white">⚠️ If the size of the webpage doesn't fit your browser window, please scroll the browser bar to the top and zoom out. <sub>(click to remove)</sub> </strong>
@@ -114,7 +116,7 @@ background-repeat: no-repeat;text-align: center; overflow: hidden">
         <tr>
           <td style="padding: 0; padding-top: 0.5%; padding-left: 0px; width: 50%;">
             <div style="display: table; height: 100%; width: 100%">
-              <div id="btn1" class="btns abut" style="background-image: url(/assets/images/hat.png); background-size: contain;background-position: center ;
+              <div id="btn1" class="btns abut" style="background-image: url({{ assets }}/images/hat.png); background-size: contain;background-position: center ;
 background-repeat: no-repeat;text-align: center;font-size: 30px;color:white;">
                 <div id="inner1" class='inner_class'>
                   1
@@ -124,7 +126,7 @@ background-repeat: no-repeat;text-align: center;font-size: 30px;color:white;">
           </td>
           <td style="padding: 0; padding-top: 0.5%; padding-right: 0px; width: 50%;">
             <div style="display: table; height: 100%; width: 100%">
-              <div id="btn2" class="btns abut" style="background-image: url(/assets/images/cat.png); background-size: contain;background-position: center ;
+              <div id="btn2" class="btns abut" style="background-image: url({{ assets }}/images/cat.png); background-size: contain;background-position: center ;
 background-repeat: no-repeat;text-align: center;font-size: 30px;color:white;">
                 <div id="inner2" class='inner_class'>
                   2
@@ -136,7 +138,7 @@ background-repeat: no-repeat;text-align: center;font-size: 30px;color:white;">
         <tr>
           <td style="padding: 0; padding-bottom: 0.5%; padding-left: 0px; width: 50%;">
             <div style="display: table; height: 100%; width: 100%">
-              <div id="btn3" class="btns abut" style="background-image: url(/assets/images/rat.png); background-size: contain;background-position: center ;
+              <div id="btn3" class="btns abut" style="background-image: url({{ assets }}/images/rat.png); background-size: contain;background-position: center ;
 background-repeat: no-repeat;text-align: center;font-size: 30px;color:white;">
                 <div id='inner3' class='inner_class'>
                   3
@@ -146,7 +148,7 @@ background-repeat: no-repeat;text-align: center;font-size: 30px;color:white;">
           </td>
           <td style="padding: 0; padding-bottom: 0.5%; padding-right: 0px; width: 50%;">
             <div style="display: table; height: 100%; width: 100%">
-              <div id="btn4" class="btns abut" style="background-image: url(/assets/images/rabbit.png); background-size: contain;background-position: center ;
+              <div id="btn4" class="btns abut" style="background-image: url({{ assets }}/images/rabbit.png); background-size: contain;background-position: center ;
 background-repeat: no-repeat;text-align: center;font-size: 30px;color:white;">
                 <div id='inner4' class='inner_class'>
                   4
@@ -159,7 +161,7 @@ background-repeat: no-repeat;text-align: center;font-size: 30px;color:white;">
     </table>
     <div style="padding: 0; padding-bottom: 0.5%; padding-left: 0px; width: 100%; height: 15%">
       <div style="display: table; height: 50%; width: 100%">
-        <a id="btnconfirm" class="btns abut" style="height: 100%; text-decoration: none;background-image: url(/assets/images/confirm.png); background-size: contain;background-position: center ;
+        <a id="btnconfirm" class="btns abut" style="height: 100%; text-decoration: none;background-image: url({{ assets }}/images/confirm.png); background-size: contain;background-position: center ;
 background-repeat: no-repeat;text-align: center;font-size: 30px;color:white;" href="javascript:void(0);">Confirm!</a>
       </div>
     </div>
@@ -234,7 +236,7 @@ background-repeat: no-repeat;text-align: center;font-size: 30px;color:white;" hr
   chan();
   if ({{ cg }}){
       var v = $("<video muted>").append(
-        $("<source>").prop("src", "/assets/video/Games/game1/game1cg.mp4")
+        $("<source>").prop("src", "{{ assets }}/video/Games/game1/game1cg.mp4")
       ).attr("id", "sv");
       if (document.documentElement.clientHeight / 9 > document.documentElement.clientWidth / 16){
         v.css("width", "90vw");

@@ -22,7 +22,7 @@
   var height = {{ height }};
   window.clickable = false;
 </script>
-<script src="/assets/js/map.js"></script>
+<script src="{{ local_assets }}/js/map.js"></script>
 <script>
   var btnbtr = [];
   window.locked = true;
@@ -127,6 +127,8 @@
     if (btnc <= btnLimit){
       bs.callback = (event) => {alert("locked")};
       btnbtr.push(bs);
+    } else if (btnc >= btnLimit + 2) {
+      bs.callback = (event) => {alert("not yet unlocked")}
     } else {
       bs.callback = b[2];
     }
@@ -137,7 +139,11 @@
     bs.y = b[1];
     bs.internal_y = b[1];
     if (b[3]){
-      bs.texture = PIXI.Texture.from(b[3]);
+      if (btnc <= btnLimit){
+        bs.texture = PIXI.Texture.from(b[3]);
+      } else {
+        bs.texture = PIXI.Texture.from(b[4]);
+      }
     } else {
       bs.texture = PIXI.Texture.WHITE;
     }
