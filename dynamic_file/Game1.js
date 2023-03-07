@@ -52,7 +52,9 @@
           var btns = Array.from({length: der.length}, (_, i) => shuffle([1,2,3,4]));
           window.localStorage.setItem("u9aTDfz($2K%Ev3x", JSON.stringify(btns));
         } else {
-          var btns = JSON.parse(window.localStorage.getItem("u9aTDfz($2K%Ev3x"));
+          // var btns = JSON.parse(window.localStorage.getItem("u9aTDfz($2K%Ev3x"));
+          var btns = Array.from({length: der.length}, (_, i) => [1,2,3,4]);
+          window.localStorage.setItem("u9aTDfz($2K%Ev3x", JSON.stringify(btns));
         }
         function selection(btn){
           $("#demo").text(["", "A", "B", "C", "D"][btn]);
@@ -139,7 +141,7 @@
           } else {
             var trueNum = rlist[qnum];
             var qobj = der[trueNum];
-            $("#question_container").text(qnum+". "+qobj[1]);
+            $("#question_container").text((qnum+1)+". "+qobj[1]);
             var currSel = [undefined];
             btns[qnum].map((btn, shuf) => {$("#inner"+btn).text(qobj[shuf+2]).parent().click(() => {if (cdobj.getRemains() > 0){selection(btn); currSel[0] = btn;}});});
             function hand_med(tr, sel){

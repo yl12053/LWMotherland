@@ -18,7 +18,7 @@ var btns = [
         }
       }
     }
-  )}, function(){window.location="/Game1?cg=1";});},assets_url + "/images/map/button1.jpg", assets_url + "/images/map/btny.jpg"],
+  )}, function(){window.location="/Game1?cg=1";});},assets_url + "/images/map/button1.jpg", assets_url + "/images/map/btny.png"],
   [796, 867, function(event){window.clickable=false;bhole(827, 894, function(){$.ajax(
     {
       "url": "/changeLoc",
@@ -38,7 +38,7 @@ var btns = [
         }
       }
     }
-  )}, function(){window.location="/Game2?cg=1";});},assets_url + "/images/map/button2.jpg", assets_url + "/images/map/btny.jpg"],
+  )}, function(){window.location="/Game2?cg=1";});},assets_url + "/images/map/button2.jpg", assets_url + "/images/map/btny.png"],
   [1283, 578, function(event){window.clickable=false;bhole(1314, 603, function(){$.ajax(
     {
       "url": "/changeLoc",
@@ -58,5 +58,5 @@ var btns = [
         }
       }
     }
-  )}, function(){window.location="/Game3?cg=1";});},assets_url + "/images/map/button3.jpg", assets_url + "/images/map/btny.jpg"]
+  )}, function(){window.location="/Game3?cg=1";});},assets_url + "/images/map/button3.jpg", assets_url + "/images/map/btny.png"]
 ];

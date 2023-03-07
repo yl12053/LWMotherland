@@ -26,7 +26,7 @@ allowhex = []
 initialized = True
 print("[Worker 2] Disabled.")
 
-max_question = 20
+max_question = 10
 
 
 @app.route("/dynamic/g2dynam.js")

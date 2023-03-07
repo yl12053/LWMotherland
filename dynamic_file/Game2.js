@@ -8,7 +8,7 @@
   });
   var AC = {
     'flag': false,
-    'audio_file': new Audio(assets_url + "/audio/AC/siren.mp3"),
+    'audio_file': new Audio(assets_url + "/audio/AC/angus.mkv"),
     'start_func': function(){
       ableExit = false;
       this.flag = true;
@@ -39,10 +39,17 @@
       this.flag = false;
     }
   }
-  $("#btnright").click(function (){
-    AC.end_func();
-    window.location = "/map";
-  })
+  function giveR(){
+    if ($("#btnright").length){
+      $("#btnright").click(function (){
+        AC.end_func();
+        window.location = "/map";
+      });
+    } else {
+      setTimeout(giveR, 0);
+    }
+  }
+  setTimeout(giveR, 0);
   //{% raw %}
   function escape(text){
     var elem = document.createElement('textarea');
@@ -209,7 +216,7 @@
         AC.end_func();
       }, (res) => {AC.end_func();});
     });
-    //AC.start_func();
+    // AC.start_func();
   });
   //{% endraw %}
 })(BigInt("{{ px }}"), BigInt("{{ py }}"), "{{ hx }}");
