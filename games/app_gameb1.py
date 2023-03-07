@@ -54,7 +54,7 @@ def gameb1():
     mdls = Model.player_position(current_user.id, 0, 0, 0, 0, 0, time.time(),
                                  None)
     Model.self_db.session.add(mdls)
-  Model.self_db.session.commit(mdls)
+  Model.self_db.session.commit()
   qM = Model.Game1BQ.query.first()
   allS = json.dumps(qM.All)
   usd = Model.Game1Bypass.query.filter_by(id=current_user.id).first()
