@@ -207,7 +207,7 @@ def ques():
       ])
       n += 1
     itl = [x[0] for x in rtd]
-    mdt = Model.Game1Details(current_user.id, 0, 0, 600, 0, itl)
+    mdt = Model.Game1Details(current_user.id, 0, 0, 240, 0, itl)
     Model.self_db.session.add(mdt)
     Model.self_db.session.commit()
   encStr = json.dumps(rtd)
@@ -241,7 +241,7 @@ def leader():
     pass
   mdf = Model.player_position.query.filter_by(id=current_user.id).first()
   if mdf is not None:
-    if mdf.preventRedone >= 2:
+    if mdf.preventRedone >= 1:
       return flask.redirect("/map")
   hexs = uuid.uuid4().hex
   while hexs in game1key.keys() and game1key[hexs][2] - time.time() <= 600:

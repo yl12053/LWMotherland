@@ -61,19 +61,19 @@
           $("#demo").text(["", "A", "B", "C", "D"][btn]);
           $(".btns").removeClass("activ abut").addClass("abut");
           $("#btn"+["", "1", "2", "3", "4"][btn]).removeClass("abut").addClass("activ");
-          $("#btnconfirm").removeClass("dab").addClass("abut");
+          $(".btnccf").removeClass("dab").addClass("abut");
         }
         var obj = {};
         var arrv = [];
         for (var tempI = 1; tempI <= 4; tempI++){
-          obj["incorrect"+tempI] = $("<video muted>").css("width", "80%").append($("<source>").attr("src", assets_url +　"/video/Games/game1/"+tempI+"_incorrect.mp4")).prop("defaultPlaybackRate", 2).hide();
+          obj["incorrect"+tempI] = $("<video muted>").css("width", "100%").append($("<source>").attr("src", assets_url +　"/video/Games/game1/"+tempI+"_incorrect.mp4")).prop("defaultPlaybackRate", 2).hide();
           obj["incorrect"+tempI][0].load();
           arrv.push(obj["incorrect"+tempI][0]);
-          obj["correct"+tempI] = $("<video muted>").css("width", "80%").append($("<source>").attr("src", assets_url +　"/video/Games/game1/"+tempI+"_correct.mp4")).prop("defaultPlaybackRate", 2).hide();
+          obj["correct"+tempI] = $("<video muted>").css("width", "100%").append($("<source>").attr("src", assets_url +　"/video/Games/game1/"+tempI+"_correct.mp4")).prop("defaultPlaybackRate", 2).hide();
           obj["correct"+tempI][0].load();
           arrv.push(obj["correct"+tempI][0]);
         }
-        $("#cg_container").append($(arrv));
+        $("#videoCont").append($(arrv));
         function questionSet(qnum){
           function atta(num, crt){
             $(arrv).hide();
@@ -81,7 +81,7 @@
             obj[crt+num][0].pause();
             obj[crt+num][0].currentTime = 0;
             obj[crt+num][0].play();
-            obj[crt+num][0].onended = (() => {cdobj.resume(); questionSet(qnum + 1); obj[crt+num][0].onended = undefined; $("#btnconfirm").show()});
+            obj[crt+num][0].onended = (() => {cdobj.resume(); questionSet(qnum + 1); obj[crt+num][0].onended = undefined; $(".btnccf").show()});
           }
           function finishHandler(timeout, timeoutValue){
             function timeSelector(time){
@@ -135,7 +135,7 @@
           });
           $(".btns").off("click");
           $(".btns").removeClass("activ abut wrong correct wrong_nonexplict").addClass("abut");
-          $("#btnconfirm").removeClass("abut").addClass("dab");
+          $(".btnccf").removeClass("abut").addClass("dab");
           if (qnum == der.length){
             cdobj.pause();
             finishHandler(true, cdobj.getRemains());
@@ -207,21 +207,33 @@
               wrongCount++;
               setTimeout(hand_med, 0, trueNum, selec);
             }
-            
-            $("#btnconfirm").text("Confirm!").click(() => {
-              if (currSel[0]){
-                if (cdobj.getRemains() > 0){
-                  if (btns[qnum].indexOf(currSel[0])+1 == qobj[6]){
-                    correct_handler(currSel[0]);
-                  } else {
-                    incorrect_handler(currSel[0], qobj[6], btns[qnum][qobj[6]-1]);
+            $(".corn").text("✓").css("background-color", "#217845");
+            $("#leftmain").css("background-color", "#38C871");
+            $("#rightmain").css("background-color", "#38C871");
+            // $("#leftmain").css("background-color", "")
+            for (var vari of ["#leftmain", "#rightmain"]){
+              $(vari).text("Confirm").parent().click(() => {
+                if (currSel[0]){
+                  if (cdobj.getRemains() > 0){
+                    if (btns[qnum].indexOf(currSel[0])+1 == qobj[6]){
+                      correct_handler(currSel[0]);
+                      $("#leftmain").text("Correct");
+                      $("#rightmain").text("Correct");
+                    } else {
+                      incorrect_handler(currSel[0], qobj[6], btns[qnum][qobj[6]-1]);
+                      $(".corn").text("✗").css("background-color", "#782421");
+                      $("#leftmain").css("background-color", '#C83200');
+                      $("#rightmain").css("background-color", '#C83200');
+                      $("#leftmain").text("Wrong");
+                      $("#rightmain").text("Wrong");
+                    }
+                    
+                    $(".btns").off("click").removeClass("abut");
+                    $(".btnccf").off("click").removeClass("abut");
                   }
-                  $("#btnconfirm").text((qnum + 1 == der.length)?"Finish!":"Continue!");
-                  $(".btns").off("click").removeClass("abut");
-                  $("#btnconfirm").addClass("abut").hide();
                 }
-              }
-            });
+              });
+            }
           }
         }
         questionSet({{ fq }});
@@ -254,6 +266,7 @@
               $("#countdown_container")[0].appendChild(cdobj.app.view);
               setTimeout(pQuestion, 0, der, cdobj);
               cdobj.beginCountdown();
+              window.cdo = cdobj;
             } catch (error){
               dFR--;
               if (dFR > 0){
