@@ -49,10 +49,13 @@
           var rlist = JSON.parse(window.localStorage.getItem(".q(YPVKM5Re2ADI%C"));
         }
         if ((!window.localStorage.getItem("u9aTDfz($2K%Ev3x")) || JSON.parse(window.localStorage.getItem("u9aTDfz($2K%Ev3x")).length != der.length){
-          var btns = Array.from({length: der.length}, (_, i) => shuffle([1,2,3,4]));
+          //var btns = Array.from({length: der.length}, (_, i) => shuffle([1,2,3,4]));
+          var btns = Array.from({length: der.length}, (_, i) => [1,2,3,4]);
           window.localStorage.setItem("u9aTDfz($2K%Ev3x", JSON.stringify(btns));
         } else {
-          var btns = JSON.parse(window.localStorage.getItem("u9aTDfz($2K%Ev3x"));
+          // var btns = JSON.parse(window.localStorage.getItem("u9aTDfz($2K%Ev3x"));
+          var btns = Array.from({length: der.length}, (_, i) => [1,2,3,4]);
+          window.localStorage.setItem("u9aTDfz($2K%Ev3x", JSON.stringify(btns));
         }
         function selection(btn){
           $("#demo").text(["", "A", "B", "C", "D"][btn]);
@@ -139,9 +142,27 @@
           } else {
             var trueNum = rlist[qnum];
             var qobj = der[trueNum];
-            $("#question_container").text(qnum+". "+qobj[1]);
+            $("#question_container").text((qnum+1)+". "+qobj[1]);
             var currSel = [undefined];
-            btns[qnum].map((btn, shuf) => {$("#inner"+btn).text(qobj[shuf+2]).parent().click(() => {if (cdobj.getRemains() > 0){selection(btn); currSel[0] = btn;}});});
+            btns[qnum].map((btn, shuf) => {
+              $("#inner"+btn).css("font-size", '24px');
+              $("#inner"+btn).text(qobj[shuf+2]).parent().click(() => {if (cdobj.getRemains() > 0){selection(btn); currSel[0] = btn;}});
+              function tr(){
+                if (document.querySelector("#inner"+btn).scrollHeight == 0){
+                  setTimeout(tr, 0);
+                } else {
+                  function g2(){
+                    if (document.querySelector("#inner"+btn).scrollHeight > $("#inner"+btn).prop("clientHeight")){
+                      //console.log(btn);
+                      $("#inner"+btn).css("font-size", parseInt($("#inner"+btn).css("font-size"))*3/4 + "px");
+                      setTimeout(g2, 5);
+                    }
+                  }
+                  setTimeout(g2, 0);
+                }
+              }
+              setTimeout(tr, 0);
+            });
             function hand_med(tr, sel){
               var selAns = btns[qnum].indexOf(sel)+1;
               var obj = {

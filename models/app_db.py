@@ -65,8 +65,10 @@ def classes(db, app):
       y = db.Column(db.Integer)
       reserved = db.Column(db.Integer)
       preventRedone = db.Column(db.Integer)
+      timeStart = db.Column(db.Float)
+      timeEnd = db.Column(db.Float)
 
-      def __init__(self, id, dim, x, y, reserved, preventRedone=0):
+      def __init__(self, id, dim, x, y, reserved, preventRedone=0, start=0, end=0):
         if preventRedone < 0:
           preventRedone = 0
         self.id = id
@@ -75,6 +77,8 @@ def classes(db, app):
         self.y = y
         self.reserved = reserved
         self.preventRedone = preventRedone
+        self.timeStart = start
+        self.timeEnd = end
 
     class Game1Details(db.Model):
       __tablename__ = "Game1Details"
@@ -161,6 +165,17 @@ def classes(db, app):
         self._id = _id
         self.All = All
         self.WrongIndex = WrongIndex
+
+    class additional_mark(db.Model):
+      __tablename__ = "additional_mark"
+      id = db.Column(db.Integer, primary_key=True)
+      group = db.Column(db.VARCHAR(255))
+      mark = db.Column(db.Integer)
+
+      def __init__(self, id, group, mark):
+        self.id = id
+        self.group = group
+        self.mark = mark
 
   for items in WrapperClass.__dict__.keys():
     if isinstance(getattr(WrapperClass, items), type) and (db.Model in getattr(

@@ -20,7 +20,7 @@ game1key = {}
 hexmap = {}
 allowhex = []
 
-mc_number = 15
+mc_number = 10
 """
 with current_app.app_context():
   if mc_number > Model.self_db.Game1Q.query.count():
@@ -45,7 +45,7 @@ def gheader():
   allowhex.remove(hx)
   p1, p2 = tuple(game1key[hx][0][1])
   mod = Model.Game1Details.query.filter_by(id=current_user.id).first()
-  timeR = (mod.timeLeftGame1 if mod else 600)
+  timeR = (mod.timeLeftGame1 if mod else 240)
   s = 0
   if mod:
     s += (mod.correctCountGame1 if mod else 0)

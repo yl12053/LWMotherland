@@ -8,7 +8,7 @@
   });
   var AC = {
     'flag': false,
-    'audio_file': new Audio(assets_url + "/audio/AC/siren.mp3"),
+    'audio_file': new Audio(assets_url + "/audio/AC/angus.mkv"),
     'start_func': function(){
       ableExit = false;
       this.flag = true;
@@ -39,10 +39,17 @@
       this.flag = false;
     }
   }
-  $("#btnright").click(function (){
-    AC.end_func();
-    window.location = "/map";
-  })
+  function giveR(){
+    if ($("#btnright").length){
+      $("#btnright").click(function (){
+        AC.end_func();
+        window.location = "/map";
+      });
+    } else {
+      setTimeout(giveR, 0);
+    }
+  }
+  setTimeout(giveR, 0);
   //{% raw %}
   function escape(text){
     var elem = document.createElement('textarea');
@@ -131,7 +138,7 @@
       for (var reg in replace_obj){
         toBe = toBe.replace(new RegExp(reg), replace_obj[reg]);
       }
-      html += toBe + "<br><hr></hr>";
+      html += toBe + "<br><br><br><hr></hr>";
       totht += html;
     }
     console.log(answer_handin);
@@ -198,6 +205,7 @@
       console.log(handin_str);
       var res = CryptoJs.AES.encrypt(handin_str, CryptoJs.enc.Hex.parse(key), { iv: ivdFinal });
       var base = CryptoJs.enc.Base64.stringify(res.ciphertext);
+      $("#btnright").off("click").attr("disabled", true);
       $.ajax({
         "url": "/apis/game2/hand_in",
         "method": "POST",
@@ -206,10 +214,13 @@
           "raw": base
         },
       }).then((res) => {
+        $("#btnright").click(() => {
+          window.location = "/map";
+        }).attr("disabled", false);
         AC.end_func();
       }, (res) => {AC.end_func();});
     });
-    //AC.start_func();
+    // AC.start_func();
   });
   //{% endraw %}
 })(BigInt("{{ px }}"), BigInt("{{ py }}"), "{{ hx }}");

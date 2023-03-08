@@ -303,7 +303,7 @@ p.a{
 {% endblock %}
 
 {% block content %}
-<video autoplay muted loop style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); height: 100vh; width: 100vw; z-index: 0; object-fit: cover;">
+<video autoplay muted loop style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); height: 100vh; width: 100vw; z-index: 0; object-fit: cover; display: none" id="bgi">
   <source src="{{ assets }}/video/Games/game2/bg2.mp4" />
 </video>
 {% for j in ["left", "right"] %}
@@ -323,16 +323,18 @@ p.a{
 <div id="container" class="noselect">
   
   <div id="mainzone" style="height: calc(100% - 60px); width: 80%; display: none; border: 30px ridge rgba(128,121,126,1); border-radius: 0px; margin: auto; overflow-y: auto">
-    <div style="background-color: rgba(21, 14, 87, 0.7); border-radius: 5px; color: white; margin: 40px auto 20px auto; padding: 50px;padding-bottom:20px; width: 80%;color:aquamarine;font:normal 1.1em RetroGaming;border-color: coral;border:solid">
+    <div style="background-color: rgba(21, 14, 87, 0.7); border-radius: 5px; color: white; margin: 40px auto 20px auto; padding: 50px;padding-bottom:20px; width: 80%;color:aquamarine;font:normal 1.1em RetroGaming;border-color: coral;border:solid; display: flex; justify-content: center;">
+  <img src="/assets/images/games/game2/g2c/lf.png" class="tunf"></img>
+  <div id="sys" style="width: fit-content">
   <p style="text-align: center;"><strong style="font-size:20px;width: 100%">The Three Gorges on the Yangtze River</strong></p>
   <p style="font-size:15px;text-align: center;" >Click the blanks to view pop-up word choices.</p>
+  </div>
+  <img src="/assets/images/games/game2/g2c/rf.png" class="tunf"></img>
 </div>
 <div class="content_container">
   <div id="wrapper">
   </div>
-<button id="demo" class="button-85">confirm</button>
-<button type=button class="button-85" onClick="parent.location='/map'"
- value='return to map'>return to map</buttont>
+
 </div>
 </div>
 
@@ -351,6 +353,7 @@ p.a{
       $("#left_panel").css("width", `calc((100vw - (400vh / 3))/2 + ${$("#mainzone").css("marginLeft")})`);
       $("#right_panel").css("width", `calc((100vw - (400vh / 3))/2 + ${$("#mainzone").css("marginRight")})`);
     }
+    $(".tunf").css("height", $("#sys").height() + "px");
     // for (var i = 1; i <= 2; i++){
     //  $("#img_left_"+i).css("margin-top", (document.querySelector("#img_left_"+(i-1)).getBoundingClientRect().bottom - document.querySelector("#img_left_"+i).getBoundingClientRect().y) + "px");
     //  $("#img_right_"+i).css("margin-top", (document.querySelector("#img_right_"+(i-1)).getBoundingClientRect().bottom - document.querySelector("#img_right_"+i).getBoundingClientRect().y) + "px");
@@ -381,6 +384,7 @@ p.a{
     window.pDone = true;
     $("#mainzone").show();
     $(".panel_calc").show();
+    $("#bgi").show();
   {% if cg=="true" %}
   }, false);
   {% endif %}

@@ -26,7 +26,7 @@ allowhex = []
 initialized = True
 print("[Worker 2] Disabled.")
 
-max_question = 20
+max_question = 10
 
 
 @app.route("/dynamic/g2dynam.js")
@@ -130,19 +130,12 @@ def hand():
     print(stud_input_raw)
     flask.abort(400)
   question_data = Model.Game2Q.query.all()
-  if len(question_data) != len(stud_input):
-    print("Length incorrect")
-    print(f"{len(question_data)} != {len(stud_input)}")
-    flask.abort(400)
   marks = 0
-  for question in range(len(question_data)):
-    if len(question_data[question].Options) != len(stud_input[question]):
-      flask.abort(400)
-    for n in range(len(question_data[question].Options)):
-      if len(question_data[question].Options[n]) < stud_input[question][n]:
-        flask.abort(400)
-      if question_data[question].Correct[n] == stud_input[question][n]:
-        marks += 10
+  for question in range(len(stud_input)):
+    if (stud_input[question] is not None):
+      for n in range(len(stud_input[question])):
+        if stud_input[question][n] == question_data[question].Correct[n]:
+          marks += 10
   t = Model.Game2Details.query.filter_by(id=current_user.id).first()
   if t is None:
     new = Model.Game2Details(current_user.id, stud_input, marks)

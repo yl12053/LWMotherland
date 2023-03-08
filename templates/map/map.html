@@ -24,6 +24,18 @@
 </script>
 <script src="{{ local_assets }}/js/map.js"></script>
 <script>
+  var orig =  [
+    1,0,0,0,
+    0,1,0,0,
+    0,0,1,0,
+    0,0,0,1
+  ];
+  var dark =  [
+    1,0,0,-0.5,
+    0,1,0,-0.5,
+    0,0,1,-0.5,
+    0,0,0,1
+  ];
   var btnbtr = [];
   window.locked = true;
   var stack = [];
@@ -123,17 +135,22 @@
     btnc++;
     let bs = new PIXI.Sprite();
     console.log(bs);
-    bs.interactive = true;
     if (btnc <= btnLimit){
       bs.callback = (event) => {alert("locked")};
       btnbtr.push(bs);
-    } else if (btnc >= btnLimit + 2) {
-      bs.callback = (event) => {alert("not yet unlocked")}
-    } else {
+    } else if (btnc == btnLimit + 1) {
       bs.callback = b[2];
+      bs.interactive = true;
+      console.log(b[2]);
+      btnbtr.push(bs);
+    } else {
+      //bs.callback = (event) => {alert("not yet unlocked")};
+      //btnbtr.push(bs);
     }
-    bs.hitArea = new PIXI.Ellipse(31, 25, 31, 25);
-    bs.on('pointerdown', (event) => {if (window.clickable){return bs.callback(event)}});
+    // bs.hitArea = new PIXI.Ellipse(31, 25, 31, 25);
+    bs.on('pointerdown', (event) => {console.log("C"); if (window.clickable){return bs.callback(event)}});
+    bs.on('pointerover', (event) => {console.log("O"); var ns = new PIXI.ColorMatrixFilter(); ns.matrix = dark; bs.filters = [dark];});
+    bs.on('pointerout', (event) => {console.log("T"); var ns = new PIXI.ColorMatrixFilter(); ns.matrix = orig; bs.filters = [orig];});
     bs.internal_x = b[0];
     bs.x = b[0];
     bs.y = b[1];
@@ -143,6 +160,7 @@
         bs.texture = PIXI.Texture.from(b[3]);
       } else {
         bs.texture = PIXI.Texture.from(b[4]);
+        //bs.texture = PIXI.Texture.WHITE;
       }
     } else {
       bs.texture = PIXI.Texture.WHITE;

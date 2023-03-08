@@ -49,7 +49,12 @@
     rdict = {"success": True}
     rdict["leaders"] = dc.copy()
     #rdict["leaders"].sort(key=lambda x: x["score"], reverse=True)
-    rdict["maxScore"] = 200
+    if len(rdict["leaders"]) == 0:
+      rdict["maxScore"] = 1
+    else:
+      rdict["maxScore"] = max([x["score"] for x in rdict["leaders"]])
+      if (rdict["maxScore"] <= 0):
+        rdict["maxScore"] = 1
     
     return window.parse(rdict)
   window.datUpload = update_leaderboard
