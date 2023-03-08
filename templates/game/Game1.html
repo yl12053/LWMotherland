@@ -90,6 +90,18 @@
   #btnconfirm {
     justify-content: center;
   }
+  .corn {
+    background-color:#217845;
+    color:white;
+    width: 100%;
+    aspect-ratio:1/1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .abs_btns {
+    cursor: pointer;
+  }
 </style>
 {% endblock %}
 {% block script %}
@@ -100,6 +112,7 @@
 {% block content %}
 <div id="container" class="noselect" style = "background-color:rgba(194, 141, 29, 0.8)">
   <div id="mainzone" style="height: 80%; width: 80%; display: none; border: none; margin: auto;">
+    <div style="height: 6.5%"></div>
     <div id="outer_containner" style="height: 15%; width: 95%; display: flex; background-color: yellow;border-radius:15px;margin:10px;position:center;border: 10px ridge rgba(128,121,126,1);">
       <div id="question_container" style="height: 100%; width: calc(100% - 12vh); overflow: hidden ;margin: 5px;text-align: center; margin-right: 0px;font-size:30px">
       Question Here
@@ -108,7 +121,18 @@
       </div>
     </div>
     <div id="cg_container" style="height: 60%; width: 100%; background-image: url({{ assets }}/images/questionbox.png);background-size: contain;background-position: center ;
-background-repeat: no-repeat;text-align: center; overflow: hidden">
+background-repeat: no-repeat;text-align: center; overflow: hidden; display: flex; justify-content: center;">
+      <div id="leftbtn" class="btnccf" style="width: 10%; height: 100%">
+        <div id="lefttop" class='corn' style="border-radius: 16px 0px 0px 0px;">&check;</div>
+        <div id="leftmain" style="height: max-content; width: 100%; background-color:#38C871; writing-mode: vertical-rl;text-orientation: upright; display: flex; justify-content: center; align-items: center; font-family: 'Bebas Neue'; color: white;">Confirm</div>
+        <div id="leftbottom" class='corn' style="border-radius: 0px 0px 0px 16px;">&check;</div>
+      </div>
+      <div id="videoCont" style="width: 80%"></div>
+      <div id="rightbtn" class="btnccf" style="width: 10%; height: 100%">
+        <div id="righttop" class='corn' style="border-radius: 0px 16px 0px 0px;">&check;</div>
+        <div id="rightmain" style="height: max-content; width: 100%; background-color:#38C871; writing-mode: vertical-rl;text-orientation: upright; display: flex; justify-content: center; align-items: center; font-family: 'Bebas Neue'; color: white;">Confirm</div>
+        <div id="rightbottom" class='corn' style="border-radius: 0px 0px 16px 0px;">&check;</div>
+      </div>
     </div>
     
     <table id="table" style="height: 30%; width: 100%">
@@ -159,14 +183,17 @@ background-repeat: no-repeat;text-align: center;font-size: 30px;color:white;">
         </tr>
       </tbody>
     </table>
+    <!--
     <div style="padding: 0; padding-bottom: 0.5%; padding-left: 0px; width: 100%; height: 15%">
       <div style="display: table; height: 50%; width: 100%">
         <a id="btnconfirm" class="btns abut" style="height: 100%; text-decoration: none;background-image: url({{ assets }}/images/confirm.png); background-size: contain;background-position: center ;
 background-repeat: no-repeat;text-align: center;font-size: 30px;color:white;" href="javascript:void(0);">Confirm!</a>
       </div>
     </div>
+    -->
   </div>
   <div id="final" style="margin: 0px; height: 100%; width: 100%; background-color: rebeccapurple; display: none">
+    <!--
     <h1 style="text-align: center; margin-top:0px"><span style="background-color: #339966; color: #ffffff;border-radius: 15px;padding-right:5px;left:5px">Game 1 finish</span></h1>
     <p>&nbsp;</p>
     <p style="text-align: center;">&nbsp;</p>
@@ -194,7 +221,7 @@ background-repeat: no-repeat;text-align: center;font-size: 30px;color:white;" hr
           <td style="width: 124.5px;" id="mark">&nbsp;</td>
         </tr>
       </tbody>
-    </table>
+    </table> -->
     <p style="text-align: center;">
       <button id="map_button" style="align: center; background: green; color: white;height:50px;width:300px;border-radius: 15px;font-size:20">
         &nbsp;
@@ -211,6 +238,22 @@ background-repeat: no-repeat;text-align: center;font-size: 30px;color:white;" hr
 
 <script>
   window.pDone = false;
+  function n(){
+    $("#leftmain").css("height", $("#leftbtn").height() - $("#lefttop").height() - $("#leftbottom").height() + "px");
+    $("#leftmain").css("font-size", Math.floor($("#leftmain").height() / 10) + "px");
+    if ($("#leftmain").height() == 0){
+      setTimeout(n, 0);
+    }
+  }
+  setTimeout(n, 0);
+  function nr(){
+    $("#rightmain").css("height", $("#rightbtn").height() - $("#righttop").height() - $("#rightbottom").height() + "px");
+    $("#rightmain").css("font-size", Math.floor($("#rightmain").height() / 10) + "px");
+    if ($("#rightmain").height() == 0){
+      setTimeout(nr, 0);
+    }
+  }
+  setTimeout(nr, 0);
   $("#map_button").addClass("wrong");
   function myFunction() {
     document.getElementById("demo").innerHTML = "";
@@ -230,7 +273,14 @@ background-repeat: no-repeat;text-align: center;font-size: 30px;color:white;" hr
       fs = 1;
     }
     $(".inner_class").css("font-size", fs + "px");
+    $("#leftmain").css("height", $("#leftbtn").height() - $("#lefttop").height() - $("#leftbottom").height() + "px");
+    $("#leftmain").css("font-size", Math.floor($("#leftmain").height() / 10) + "px");
+    $("#rightmain").css("height", $("#rightbtn").height() - $("#lefttop").height() - $("#leftbottom").height() + "px");
+    $("#rightmain").css("font-size", Math.floor($("#rightmain").height() / 10) + "px");
   }
+  setInterval(() => {
+    $(".corn").css("font-size", $(".corn").height() / 2 + "px");
+  }, 5);
   var resizeObserver = new ResizeObserver(chan);
   resizeObserver.observe(document.body);
   chan();

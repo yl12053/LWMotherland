@@ -68,7 +68,15 @@ def classes(db, app):
       timeStart = db.Column(db.Float)
       timeEnd = db.Column(db.Float)
 
-      def __init__(self, id, dim, x, y, reserved, preventRedone=0, start=0, end=0):
+      def __init__(self,
+                   id,
+                   dim,
+                   x,
+                   y,
+                   reserved,
+                   preventRedone=0,
+                   start=0,
+                   end=0):
         if preventRedone < 0:
           preventRedone = 0
         self.id = id
