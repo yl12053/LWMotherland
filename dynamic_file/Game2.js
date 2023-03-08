@@ -138,7 +138,7 @@
       for (var reg in replace_obj){
         toBe = toBe.replace(new RegExp(reg), replace_obj[reg]);
       }
-      html += toBe + "<br><hr></hr>";
+      html += toBe + "<br><br><br><hr></hr>";
       totht += html;
     }
     console.log(answer_handin);
@@ -205,6 +205,7 @@
       console.log(handin_str);
       var res = CryptoJs.AES.encrypt(handin_str, CryptoJs.enc.Hex.parse(key), { iv: ivdFinal });
       var base = CryptoJs.enc.Base64.stringify(res.ciphertext);
+      $("#btnright").off("click").attr("disabled", true);
       $.ajax({
         "url": "/apis/game2/hand_in",
         "method": "POST",
@@ -213,6 +214,9 @@
           "raw": base
         },
       }).then((res) => {
+        $("#btnright").click(() => {
+          window.location = "/map";
+        }).attr("disabled", false);
         AC.end_func();
       }, (res) => {AC.end_func();});
     });
