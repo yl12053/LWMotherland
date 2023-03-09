@@ -1,7 +1,8 @@
-flask
-Flask-SQLAlchemy
-pymysql
+Flask
+Flask-Cors
 Flask-Login
-requests
-Flask-SocketIO
-pycryptodome
+Flask-Principal
+Flask_SocketIO
+Flask_SQLAlchemy==2.5.1
+pycryptodome==3.17
+SQLAlchemy==1.4.41

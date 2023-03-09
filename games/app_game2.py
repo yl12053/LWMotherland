@@ -39,8 +39,8 @@ def gheader():
   p1, p2 = tuple(game2key[hx][0][1])
   rtemplate = Environment(loader=BaseLoader).from_string(
     open(
-      f"dynamic_file/Game2{('' if current_app.config['T_DEBUG'] else '_Obfuscation')}.js"
-    ).read())
+      f"dynamic_file/Game2{('' if current_app.config['T_DEBUG'] else '_Obfuscation')}.js",
+      encoding="utf-8").read())
   return rtemplate.render(hx=hx, px=hex(p1), py=hex(p2))
 
 

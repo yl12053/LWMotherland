@@ -52,7 +52,7 @@ def gheader():
     s += (mod.wrongCountGame1 if mod else 0)
   rtemplate = Environment(loader=BaseLoader).from_string(
     open("dynamic_file/Game1%s.js" %
-         ("" if current_app.config["T_DEBUG"] else "_Obfuscation")).read())
+         ("" if current_app.config["T_DEBUG"] else "_Obfuscation"), encoding="utf-8").read())
   return rtemplate.render(hx=hx,
                           px=hex(p1),
                           py=hex(p2),
