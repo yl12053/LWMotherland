@@ -208,8 +208,8 @@
               setTimeout(hand_med, 0, trueNum, selec);
             }
             $(".corn").text("?").css("background-color", "#217845");
-            $("#leftmain").css("background-color", "#38C871");
-            $("#rightmain").css("background-color", "#38C871");
+            $("#leftmain").css("background-color", "#98BF64");
+            $("#rightmain").css("background-color", "#98BF64");
             // $("#leftmain").css("background-color", "")
             for (var vari of ["#leftmain", "#rightmain"]){
               $(vari).text("C O N F I R M").parent().click(() => {
