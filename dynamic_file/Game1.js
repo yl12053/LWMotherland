@@ -207,25 +207,28 @@
               wrongCount++;
               setTimeout(hand_med, 0, trueNum, selec);
             }
-            $(".corn").text("✓").css("background-color", "#217845");
+            $(".corn").text("?").css("background-color", "#217845");
             $("#leftmain").css("background-color", "#38C871");
             $("#rightmain").css("background-color", "#38C871");
             // $("#leftmain").css("background-color", "")
             for (var vari of ["#leftmain", "#rightmain"]){
-              $(vari).text("Confirm").parent().click(() => {
+              $(vari).text("C O N F I R M").parent().click(() => {
                 if (currSel[0]){
                   if (cdobj.getRemains() > 0){
                     if (btns[qnum].indexOf(currSel[0])+1 == qobj[6]){
                       correct_handler(currSel[0]);
-                      $("#leftmain").text("Correct");
-                      $("#rightmain").text("Correct");
+                      $(".corn").text("✓").css("background-color", "#217845");
+                      $("#leftmain").css("background-color", "#38C871");
+                      $("#rightmain").css("background-color", "#38C871");
+                      $("#leftmain").text("C O R R E C T");
+                      $("#rightmain").text("C O R R E C T");
                     } else {
                       incorrect_handler(currSel[0], qobj[6], btns[qnum][qobj[6]-1]);
                       $(".corn").text("✗").css("background-color", "#782421");
                       $("#leftmain").css("background-color", '#C83200');
                       $("#rightmain").css("background-color", '#C83200');
-                      $("#leftmain").text("Wrong");
-                      $("#rightmain").text("Wrong");
+                      $("#leftmain").text("W R O N G");
+                      $("#rightmain").text("W R O N G");
                     }
                     
                     $(".btns").off("click").removeClass("abut");

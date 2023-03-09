@@ -123,15 +123,16 @@
     <div id="cg_container" style="height: 60%; width: 100%; background-image: url({{ assets }}/images/questionbox.png);background-size: contain;background-position: center ;
 background-repeat: no-repeat;text-align: center; overflow: hidden; display: flex; justify-content: center;">
       <div id="leftbtn" class="btnccf" style="width: 10%; height: 100%">
-        <div id="lefttop" class='corn' style="border-radius: 16px 0px 0px 0px;">&check;</div>
-        <div id="leftmain" style="height: max-content; width: 100%; background-color:#38C871; writing-mode: vertical-rl;text-orientation: upright; display: flex; justify-content: center; align-items: center; font-family: 'Bebas Neue'; color: white;">Confirm</div>
-        <div id="leftbottom" class='corn' style="border-radius: 0px 0px 0px 16px;">&check;</div>
+        <div id="lefttop" class='corn' style="border-radius: 16px 0px 0px 0px;">?</div>
+        <div id="leftmain" style="height: max-content; width: 100%; background-color:#38C871; writing-mode: vertical-rl; transform: rotateX(180deg) scale(-1, 1); display: flex; justify-content: center; align-items: center; font-family: 'ComicMono'; color: white;">C O N F I R M</div>
+        <div id="leftbottom" class='corn' style="border-radius: 0px 0px 0px 16px;">?</div>
       </div>
       <div id="videoCont" style="width: 80%"></div>
       <div id="rightbtn" class="btnccf" style="width: 10%; height: 100%">
-        <div id="righttop" class='corn' style="border-radius: 0px 16px 0px 0px;">&check;</div>
-        <div id="rightmain" style="height: max-content; width: 100%; background-color:#38C871; writing-mode: vertical-rl;text-orientation: upright; display: flex; justify-content: center; align-items: center; font-family: 'Bebas Neue'; color: white;">Confirm</div>
-        <div id="rightbottom" class='corn' style="border-radius: 0px 0px 16px 0px;">&check;</div>
+        <div id="righttop" class='corn' style="border-radius: 0px 16px 0px 0px;">?</div>
+        <div id="rightmain" style="height: max-content; width: 100%; background-color:#38C871; writing-mode: vertical-rl;transform: rotateX(180deg) scale(-1, 1);
+ display: flex; justify-content: center; align-items: center; font-family: 'ComicMono'; color: white;">C O N F I R M</div>
+        <div id="rightbottom" class='corn' style="border-radius: 0px 0px 16px 0px;">?</div>
       </div>
     </div>
     
@@ -192,7 +193,7 @@ background-repeat: no-repeat;text-align: center;font-size: 30px;color:white;" hr
     </div>
     -->
   </div>
-  <div id="final" style="margin: 0px; height: 100%; width: 100%; background-image: url({{ assets }}/images/games/game1/tgoh.png); display: none">
+  <div id="final" style="margin: 0px; height: 100%; width: 100%; background-image: url({{ assets }}/images/games/game1/tgoh.png); background-size: cover;display: none">
     <!--
     <h1 style="text-align: center; margin-top:0px"><span style="background-color: #339966; color: #ffffff;border-radius: 15px;padding-right:5px;left:5px">Game 1 finish</span></h1>
     <p>&nbsp;</p>
@@ -234,7 +235,7 @@ background-repeat: no-repeat;text-align: center;font-size: 30px;color:white;" hr
   window.pDone = false;
   function n(){
     $("#leftmain").css("height", $("#leftbtn").height() - $("#lefttop").height() - $("#leftbottom").height() + "px");
-    $("#leftmain").css("font-size", Math.floor($("#leftmain").height() / 10) + "px");
+    $("#leftmain").css("font-size", Math.floor($("#leftmain").height() / 10) + 1 + "px");
     if ($("#leftmain").height() == 0){
       setTimeout(n, 0);
     }
@@ -242,7 +243,7 @@ background-repeat: no-repeat;text-align: center;font-size: 30px;color:white;" hr
   setTimeout(n, 0);
   function nr(){
     $("#rightmain").css("height", $("#rightbtn").height() - $("#righttop").height() - $("#rightbottom").height() + "px");
-    $("#rightmain").css("font-size", Math.floor($("#rightmain").height() / 10) + "px");
+    $("#rightmain").css("font-size", Math.floor($("#rightmain").height() / 10) + 1 + "px");
     if ($("#rightmain").height() == 0){
       setTimeout(nr, 0);
     }
@@ -250,9 +251,9 @@ background-repeat: no-repeat;text-align: center;font-size: 30px;color:white;" hr
   setTimeout(nr, 0);
   setInterval(() => {
     $("#leftmain").css("height", $("#leftbtn").height() - $("#lefttop").height() - $("#leftbottom").height() + "px");
-    $("#leftmain").css("font-size", Math.floor($("#leftmain").height() / 10) + "px");
+    $("#leftmain").css("font-size", Math.floor($("#leftmain").height() / 10)+1 + "px");
     $("#rightmain").css("height", $("#rightbtn").height() - $("#lefttop").height() - $("#leftbottom").height() + "px");
-    $("#rightmain").css("font-size", Math.floor($("#rightmain").height() / 10) + "px");
+    $("#rightmain").css("font-size", Math.floor($("#rightmain").height() / 10)+1 + "px");
   }, 5);
   $("#map_button").addClass("wrong");
   function myFunction() {
