@@ -192,7 +192,7 @@ background-repeat: no-repeat;text-align: center;font-size: 30px;color:white;" hr
     </div>
     -->
   </div>
-  <div id="final" style="margin: 0px; height: 100%; width: 100%; background-color: rebeccapurple; display: none">
+  <div id="final" style="margin: 0px; height: 100%; width: 100%; background-image: url({{ assets }}/images/games/game1/tgoh.png); display: none">
     <!--
     <h1 style="text-align: center; margin-top:0px"><span style="background-color: #339966; color: #ffffff;border-radius: 15px;padding-right:5px;left:5px">Game 1 finish</span></h1>
     <p>&nbsp;</p>
@@ -222,14 +222,7 @@ background-repeat: no-repeat;text-align: center;font-size: 30px;color:white;" hr
         </tr>
       </tbody>
     </table> -->
-    <p style="text-align: center;">
-      <button id="map_button" style="align: center; background: green; color: white;height:50px;width:300px;border-radius: 15px;font-size:20">
-        &nbsp;
-        <strong>
-          Return to the map
-        </strong>
-      </button>
-    </p>
+    <!-- #map_button -->
     <div id="loadingIcon" style="position: absolute; bottom: 0; right: 0; height: 7vh; width: 7vh;">
       <img src="https://media.tenor.com/5o2p0tH5LFQAAAAi/hug.gif" style="height: 100%; width: 100%; position: relative; display: block; float: left"/>
     </div>
@@ -254,6 +247,12 @@ background-repeat: no-repeat;text-align: center;font-size: 30px;color:white;" hr
     }
   }
   setTimeout(nr, 0);
+  setInterval(() => {
+    $("#leftmain").css("height", $("#leftbtn").height() - $("#lefttop").height() - $("#leftbottom").height() + "px");
+    $("#leftmain").css("font-size", Math.floor($("#leftmain").height() / 10) + "px");
+    $("#rightmain").css("height", $("#rightbtn").height() - $("#lefttop").height() - $("#leftbottom").height() + "px");
+    $("#rightmain").css("font-size", Math.floor($("#rightmain").height() / 10) + "px");
+  }, 5);
   $("#map_button").addClass("wrong");
   function myFunction() {
     document.getElementById("demo").innerHTML = "";
@@ -273,10 +272,6 @@ background-repeat: no-repeat;text-align: center;font-size: 30px;color:white;" hr
       fs = 1;
     }
     $(".inner_class").css("font-size", fs + "px");
-    $("#leftmain").css("height", $("#leftbtn").height() - $("#lefttop").height() - $("#leftbottom").height() + "px");
-    $("#leftmain").css("font-size", Math.floor($("#leftmain").height() / 10) + "px");
-    $("#rightmain").css("height", $("#rightbtn").height() - $("#lefttop").height() - $("#leftbottom").height() + "px");
-    $("#rightmain").css("font-size", Math.floor($("#rightmain").height() / 10) + "px");
   }
   setInterval(() => {
     $(".corn").css("font-size", $(".corn").height() / 2 + "px");
