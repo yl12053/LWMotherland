@@ -66,6 +66,7 @@
   </div>
 </div>
 <script>
+  window.audi = new Audio(assets_url + "/audio/Wonderland.mp3");
   window.pDone = false;
   var knowing = false;
   $("#mainzone").hide();
@@ -92,11 +93,19 @@
       }
       $("#container").append(v);
       v[0].play();      
-      
+      $("#container").click(function() {
+        v[0].requestFullscreen();
+        audi.play();
+        audi.onended = function(){
+          audi.currentTime = 0;
+          audi.play();
+        }
+      });
   }
   {% if cg=="true" %}
   v[0].addEventListener('ended', function (event){
     v.remove();
+    document.exitFullscreen();
   {% endif %}
     window.pDone = true;
     $("#mainzone").show();
