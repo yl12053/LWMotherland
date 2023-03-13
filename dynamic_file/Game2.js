@@ -101,9 +101,10 @@
     var answer_storage = {};
     var answer_handin = [];
     var mapA2C = window.localStorage.getItem("P^=p+PKZ*D9U}=i#");
-    if (mapA2C == null || JSON.parse(mapA2C).length != dec_json.length){
+    //if (mapA2C == null || JSON.parse(mapA2C).length != dec_json.length){
+    if (true){
       var fCac = [...Array(dec_json.length).keys()];
-      fCac.sort(() => Math.random() - 0.5);
+      //fCac.sort(() => Math.random() - 0.5);
       window.localStorage.setItem("P^=p+PKZ*D9U}=i#", JSON.stringify(fCac));
     } else {
       fCac = JSON.parse(mapA2C);
