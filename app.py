@@ -138,14 +138,6 @@ for x in apps:
   app.register_blueprint(x)
 
 
-@app.route("/lbs")
-def p():
-  tabd = Model.self_db.engine.execute(
-    "select concat(grps, ' (', mid(sec_to_time(pasg), 4, 8), ')') as 'grpn', avgTotal + ifnull(mks, 0) as 'fmks' from (select grps as 'grps', avg(total) as 'avgTotal', avg(game1tl) as 'pasg' from (select Auth.grp as 'grps', Auth.subindex as 'sid', sum(ifnull(Game1Details.timeLeftGame1, 0)) as 'game1tl', sum(if(Game1Bypass.passed = 0 or Game1Bypass.passed is null, 0, 130 - if(Game1Bypass.tipsGiven is NULL, 0, JSON_LENGTH(Game1Bypass.tipsGiven)*10)) + ifnull(Game1Details.correctCountGame1*10 + Game1Details.timeBonus, 0) + ifnull(Game2Details.marks, 0)) as 'total' from Game1BQ, (((Auth left join Game1Details on Auth.id=Game1Details.id) left join Game2Details on Auth.id=Game2Details.id) left join Game1Bypass on Auth.id=Game1Bypass.id) group by Auth.grp, Auth.subindex) as firstResult group by grps) as tabInterm left join (select `group` as grpst, sum(mark) as 'mks' from additional_mark group by grpst) as tabOuterm on tabInterm.grps = tabOuterm.grpst order by fmks desc, pasg desc;"
-  ).all()
-  return flask.jsonify([[x[0], float(x[1])] for x in tabd])
-
-
 @app.route("/<path:path>")
 def asroot(path):
   return flask.send_from_directory("As_Root",
