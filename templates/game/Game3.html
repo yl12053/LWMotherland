@@ -106,13 +106,18 @@
   v[0].addEventListener('ended', function (event){
     v.remove();
     document.exitFullscreen();
+    var con = 100;
     (function(){
-      setTimeout(() => {audi.pause()}, 5000);
       var t = 5;
       function f(){
-        var vc = t*10;
-        audi.volume -= 0.01;
-        setTimeout(f, vc);
+        con--;
+        if (con > 0){
+          var vc = t*10;
+          audi.volume -= 0.01;
+          setTimeout(f, vc);
+        } else {
+          audi.pause();
+        }
       }
       setTimeout(f, 0);
     })()
