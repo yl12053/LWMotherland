@@ -51,7 +51,8 @@ def cache_busters():
   return {
     'assets':
     'https://raw.githubusercontent.com/yl12053/LWMotherland/Dev/assets',
-    "local_assets": "https://lwmotherland.pythonanywhere.com/assets"
+    "local_assets": "https://lwmotherland.pythonanywhere.com/assets",
+    "lad": "https://lwmotherland.pythonanywhere.com"
   }
 
 
