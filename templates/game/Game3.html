@@ -106,6 +106,15 @@
   v[0].addEventListener('ended', function (event){
     v.remove();
     document.exitFullscreen();
+    $("#mainzone").click(function(){
+      var t = 5;
+      function f(){
+        var vc = t*10;
+        audi.volume -= 0.01;
+        setTimeout(f, vc);
+      }
+      setTimeout(f, 0);
+    })
   {% endif %}
     window.pDone = true;
     $("#mainzone").show();
