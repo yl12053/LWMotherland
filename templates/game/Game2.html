@@ -339,6 +339,7 @@ p.a{
 </div>
 
 <script>
+  window.fs = false;
   window.pDone = false;
   $(".panel_calc").hide();
   $("#mainzone").hide();
@@ -375,9 +376,16 @@ p.a{
       $("#container").append(v);
       $("#container").css("z-index", "1");
       v[0].play();
+      $("#body").click(function(){
+        if (!fs){
+          v.requestFullscreen();
+          fs = true;
+        }
+      });
   }
   {% if cg=="true" %}
   v[0].addEventListener('ended', function (event){
+    document.exitFullscreen()
     v.remove();
     $("#container").css("z-index", "");
   {% endif %}
