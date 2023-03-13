@@ -381,14 +381,14 @@ p.a{
         if (!window.fs){
           audi.play();
           v[0].requestFullscreen();
-          var plong = v[0].duration - v[0].currentTime - 5;
+          var plong = (v[0].duration - v[0].currentTime - 5) * 1000;
           var t = 5;
           function f(){
             var vt = t * 10;
             audi.volume -= 0.01;
             setTimeout(f, vt);
           }
-          setTimeout(f, 0);
+          setTimeout(f, plong);
           window.fs = true;
         }
       });

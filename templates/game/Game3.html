@@ -106,7 +106,8 @@
   v[0].addEventListener('ended', function (event){
     v.remove();
     document.exitFullscreen();
-    $("#mainzone").click(function(){
+    (function(){
+      setTimeout(() => {audi.pause()}, 5000);
       var t = 5;
       function f(){
         var vc = t*10;
@@ -114,7 +115,7 @@
         setTimeout(f, vc);
       }
       setTimeout(f, 0);
-    })
+    })()
   {% endif %}
     window.pDone = true;
     $("#mainzone").show();
