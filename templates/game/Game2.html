@@ -339,6 +339,7 @@ p.a{
 </div>
 
 <script>
+  window.audi = new Audio(assets_url + "/audio/Wonderland.mp3");
   window.fs = false;
   window.pDone = false;
   $(".panel_calc").hide();
@@ -376,17 +377,19 @@ p.a{
       $("#container").append(v);
       $("#container").css("z-index", "1");
       v[0].play();
-      $("#body").click(function(){
-        if (!fs){
-          v.requestFullscreen();
-          fs = true;
+      $("#container").click(function(){
+        if (!window.fs){
+          audi.play();
+          v[0].requestFullscreen();
+          window.fs = true;
         }
       });
   }
   {% if cg=="true" %}
   v[0].addEventListener('ended', function (event){
-    document.exitFullscreen()
+    document.exitFullscreen();
     v.remove();
+    audi.pause();
     $("#container").css("z-index", "");
   {% endif %}
     window.pDone = true;
