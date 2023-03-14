@@ -18,7 +18,7 @@ def p():
   ppls = []
   for x in groups:
     ppls.append(Model.Users.query.filter_by(grp=x[0]).first())
-  print(ppls)
+  #print(ppls)
   ppl_dict = {x.id: x.grp for x in ppls}
   return_list = []
   for x in ppl_dict.keys():
@@ -34,7 +34,7 @@ def p():
     addi = Model.self_db.session.query(func.sum(
       Model.additional_mark.mark)).filter(
         Model.additional_mark.group == ogub).first()[0]
-    mark += (0 if addi is None else addi)
+    mark += (0 if addi is None else int(addi))
     return_sub.append(mark)
     return_list.append(return_sub)
   return flask.jsonify(return_list)

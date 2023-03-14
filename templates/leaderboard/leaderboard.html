@@ -48,7 +48,7 @@
     global dc
     rdict = {"success": True}
     rdict["leaders"] = dc.copy()
-    #rdict["leaders"].sort(key=lambda x: x["score"], reverse=True)
+    rdict["leaders"].sort(key=lambda x: x["score"], reverse=True)
     if len(rdict["leaders"]) == 0:
       rdict["maxScore"] = 1
     else:
